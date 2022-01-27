@@ -1,5 +1,6 @@
 package io.openems.shared.influxdb;
 
+import java.awt.Point;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +21,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
-import com.influxdb.client.QueryApi;
-import com.influxdb.client.write.Point;
-import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
 import io.openems.common.OpenemsOEM;
@@ -49,12 +46,11 @@ public class InfluxConnector {
 
 	private final String ip;
 	private final int port;
-	private final String username;
-	private final String password;
+	private final String token;
 	private final String database;
 	private final String retentionPolicy;
 	private final boolean isReadOnly;
-	private final BiConsumer<Iterable<Point>, Throwable> onWriteError;
+//	private final BiConsumer<Iterable<Point>, Throwable> onWriteError;
 	private final ThreadPoolExecutor executor = new ThreadPoolExecutor(EXECUTOR_MIN_THREADS, EXECUTOR_MAX_THREADS, 60L,
 			TimeUnit.SECONDS, //
 			new ArrayBlockingQueue<>(EXECUTOR_QUEUE_SIZE), //
@@ -67,8 +63,9 @@ public class InfluxConnector {
 	 * 
 	 * @param ip           IP-Address of the InfluxDB-Server
 	 * @param port         Port of the InfluxDB-Server
-	 * @param username     The username
-	 * @param password     The password
+	 * @param token        The token. For InfluxDB 1.8 the token is built from
+	 *                     'username:password', see
+	 *                     https://docs.influxdata.com/influxdb/v1.8/tools/grafana/?t=Flux
 	 * @param database     The database name. If it does not exist, it will be
 	 *                     created
 	 * @param isReadOnly   If true, a 'Read-Only-Mode' is activated, where no data
@@ -76,17 +73,17 @@ public class InfluxConnector {
 	 * @param onWriteError A callback for write-errors, i.e. '(failedPoints,
 	 *                     throwable) -&gt; {}'
 	 */
-	public InfluxConnector(String ip, int port, String username, String password, String database,
-			String retentionPolicy, boolean isReadOnly, BiConsumer<Iterable<Point>, Throwable> onWriteError) {
+	public InfluxConnector(String ip, int port, String token, String database, String retentionPolicy,
+			boolean isReadOnly) {
+//		String retentionPolicy, boolean isReadOnly, BiConsumer<Iterable<Point>, Throwable> onWriteError) {
 		super();
 		this.ip = ip;
 		this.port = port;
-		this.username = username;
-		this.password = password;
+		this.token = token;
 		this.database = database;
 		this.retentionPolicy = retentionPolicy;
 		this.isReadOnly = isReadOnly;
-		this.onWriteError = onWriteError;
+//		this.onWriteError = onWriteError;
 		this.debugLogExecutor.scheduleWithFixedDelay(() -> {
 			int queueSize = this.executor.getQueue().size();
 			this.log.info(String.format("[monitor] Pool: %d, Active: %d, Pending: %d, Completed: %d %s",
@@ -111,31 +108,13 @@ public class InfluxConnector {
 	 */
 	private InfluxDBClient getConnection() {
 		if (this._influxDB == null) {
-			char[] token = "my-token".toCharArray();
-			String org = "my-org";
-
-			InfluxDBClient influxDB = InfluxDBClientFactory.create("http://localhost:8086", token, org);
-
-			String flux = "from(bucket:\"my-bucket\") |> range(start: 0)";
-
-			QueryApi queryApi = influxDB.getQueryApi();
-
-			//
-			// Query data
-			//
-			List<FluxTable> tables = queryApi.query(flux);
-			for (FluxTable fluxTable : tables) {
-				List<FluxRecord> records = fluxTable.getRecords();
-				for (FluxRecord fluxRecord : records) {
-					System.out.println(fluxRecord.getTime() + ": " + fluxRecord.getValueByKey("_value"));
-				}
-			}
-
+			var influxDB = InfluxDBClientFactory.create("http://" + this.ip + ":" + this.port, this.token.toCharArray(),
+					"foo" /* Provide an arbitrary value */);
 //			OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient().newBuilder() //
 //					.connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS) //
 //					.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS) //
 //					.writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
-//			InfluxDB influxDB = InfluxDBFactory.connect("http://" + this.ip + ":" + this.port, this.username,
+//			InfluxDB influxDB = InfluxDBFactory.connect(, this.username,
 //					this.password, okHttpClientBuilder);
 //			try {
 //				influxDB.query(new Query("CREATE DATABASE " + this.database, ""));
@@ -212,15 +191,11 @@ public class InfluxConnector {
 
 		InfluxDBClient influxDB = this.getConnection();
 
-		// Parse result
-		String flux = "from(bucket:\"my-bucket\") |> range(start: 0)";
+		List<FluxTable> tables = influxDB.getQueryApi().query(query);
+		tables.get(0).getRecords().forEach(record -> System.out.println(String.format("%s %s: %s %s", record.getTime(),
+				record.getMeasurement(), record.getField(), record.getValue())));
 
-		QueryApi queryApi = influxDB.getQueryApi();
-
-		String csv = queryApi.queryRaw(flux);
-
-		System.out.println("CSV response: " + csv);
-		return csv;
+		return "";
 
 //		QueryApi queryResult;
 //		try {
@@ -272,8 +247,15 @@ public class InfluxConnector {
 		b.append(" AND time < ");
 		b.append(String.valueOf(toDate.toEpochSecond()));
 		b.append("s");
-		String query = b.toString();
+//		String query = b.toString();
 
+		String query = "from(bucket: \"db/default\")" //
+				+ "  |> range(start: -1h)" //
+				+ "  |> filter(fn: (r) => r._measurement == \"data\")" //
+				+ "  |> filter(fn: (r) => r.fems == \"888\") " //
+				+ "  |> filter(fn: (r) => r._field == \"_sum/GridActivePower\")" //
+				+ "  |> yield(name: \"_results\")";
+		
 		// Execute query
 		String queryResult = this.executeQuery(query);
 

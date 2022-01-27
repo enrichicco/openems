@@ -17,11 +17,8 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Port", description = "The InfluxDB server port")
 	int port() default 8086;
 
-	@AttributeDefinition(name = "Username", description = "The login username")
-	String username();
-
-	@AttributeDefinition(name = "Password", description = "The login password")
-	String password();
+	@AttributeDefinition(name = "Token", description = "The InfluxDB login token. For version 1.8 this is built from 'username:password'.")
+	String token();
 
 	@AttributeDefinition(name = "Measurement", description = "The InfluxDB measurement")
 	String measurement() default "data";
