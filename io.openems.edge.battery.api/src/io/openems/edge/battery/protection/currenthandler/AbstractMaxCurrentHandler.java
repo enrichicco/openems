@@ -25,7 +25,7 @@ public abstract class AbstractMaxCurrentHandler {
 
 		/**
 		 * Creates a {@link Builder} for {@link AbstractMaxCurrentHandler}.
-		 * 
+		 *
 		 * @param clockProvider            a {@link ClockProvider}, mainly for JUnit
 		 *                                 tests
 		 * @param initialBmsMaxEverCurrent the (estimated) maximum allowed current. This
@@ -40,7 +40,7 @@ public abstract class AbstractMaxCurrentHandler {
 
 		/**
 		 * Sets the Voltage-To-Percent characteristics.
-		 * 
+		 *
 		 * @param voltageToPercent the {@link PolyLine}
 		 * @return a {@link Builder}
 		 */
@@ -51,7 +51,7 @@ public abstract class AbstractMaxCurrentHandler {
 
 		/**
 		 * Sets the Temperature-To-Percent characteristics.
-		 * 
+		 *
 		 * @param temperatureToPercent the {@link PolyLine}
 		 * @return a {@link Builder}
 		 */
@@ -62,7 +62,7 @@ public abstract class AbstractMaxCurrentHandler {
 
 		/**
 		 * Sets the Max-Increase-Per-Second parameter in [A].
-		 * 
+		 *
 		 * @param maxIncreasePerSecond value in [A] per Second.
 		 * @return a {@link Builder}
 		 */
@@ -99,60 +99,60 @@ public abstract class AbstractMaxCurrentHandler {
 
 	/**
 	 * Gets the ChannelId for Battery-Protection Limit originating from BMS.
-	 * 
+	 *
 	 * <ul>
 	 * <li>{@link ChannelId#BP_CHARGE_BMS}
 	 * <li>{@link ChannelId#BP_DISCHARGE_BMS}
 	 * </ul>
-	 * 
+	 *
 	 * @return the {@link ChannelId}
 	 */
 	protected abstract ChannelId getBpBmsChannelId();
 
 	/**
 	 * Gets the ChannelId for Battery-Protection Limit by Min-Cell-Voltage.
-	 * 
+	 *
 	 * <ul>
 	 * <li>{@link ChannelId#BP_CHARGE_MIN_VOLTAGE}
 	 * <li>{@link ChannelId#BP_DISCHARGE_MIN_VOLTAGE}
 	 * </ul>
-	 * 
+	 *
 	 * @return the {@link ChannelId}
 	 */
 	protected abstract ChannelId getBpMinVoltageChannelId();
 
 	/**
 	 * Gets the ChannelId for Battery-Protection Limit by Max-Cell-Voltage.
-	 * 
+	 *
 	 * <ul>
 	 * <li>{@link ChannelId#BP_CHARGE_MAX_VOLTAGE}
 	 * <li>{@link ChannelId#BP_DISCHARGE_MAX_VOLTAGE}
 	 * </ul>
-	 * 
+	 *
 	 * @return the {@link ChannelId}
 	 */
 	protected abstract ChannelId getBpMaxVoltageChannelId();
 
 	/**
 	 * Gets the ChannelId for Battery-Protection Limit by Min-Cell-Temperature.
-	 * 
+	 *
 	 * <ul>
 	 * <li>{@link ChannelId#BP_CHARGE_MIN_TEMPERATURE}
 	 * <li>{@link ChannelId#BP_DISCHARGE_MIN_TEMPERATURE}
 	 * </ul>
-	 * 
+	 *
 	 * @return the {@link ChannelId}
 	 */
 	protected abstract ChannelId getBpMinTemperatureChannelId();
 
 	/**
 	 * Gets the ChannelId for Battery-Protection Limit by Max-Cell-Temperature.
-	 * 
+	 *
 	 * <ul>
 	 * <li>{@link ChannelId#BP_CHARGE_MAX_TEMPERATURE}
 	 * <li>{@link ChannelId#BP_DISCHARGE_MAX_TEMPERATURE}
 	 * </ul>
-	 * 
+	 *
 	 * @return the {@link ChannelId}
 	 */
 	protected abstract ChannelId getBpMaxTemperatureChannelId();
@@ -160,12 +160,12 @@ public abstract class AbstractMaxCurrentHandler {
 	/**
 	 * Gets the ChannelId for Battery-Protection Limit by Force Charge/Discharge
 	 * Mode.
-	 * 
+	 *
 	 * <ul>
 	 * <li>{@link ChannelId#BP_FORCE_CHARGE}
 	 * <li>{@link ChannelId#BP_FORCE_DISCHARGE}
 	 * </ul>
-	 * 
+	 *
 	 * @return the {@link ChannelId}
 	 */
 	protected abstract ChannelId getBpForceCurrentChannelId();
@@ -173,21 +173,22 @@ public abstract class AbstractMaxCurrentHandler {
 	/**
 	 * Gets the ChannelId for Battery-Protection Limit by Max-Increase-Ampere ramp.
 	 * Mode.
-	 * 
+	 *
 	 * <ul>
 	 * <li>{@link ChannelId#BP_FORCE_CHARGE}
 	 * <li>{@link ChannelId#BP_FORCE_DISCHARGE}
 	 * </ul>
-	 * 
+	 *
 	 * @return the {@link ChannelId}
 	 */
 	protected abstract ChannelId getBpMaxIncreaseAmpereChannelId();
 
 	/**
 	 * Calculates the actual allowed current limit in [A] as minimum of:.
-	 * 
+	 *
 	 * <ul>
 	 * <li>Is the battery started? (block any charge/discharge if not)
+	 * <li>Is there any value from the BMS? (block any charge/discharge if not)
 	 * <li>Allowed Current Limit provided by Battery Management System
 	 * <li>Voltage-to-Percent characteristics for Min-Cell-Voltage
 	 * <li>Voltage-to-Percent characteristics for Max-Cell-Voltage
@@ -196,18 +197,18 @@ public abstract class AbstractMaxCurrentHandler {
 	 * <li>Applied max increase limit (e.g. 0.5 A per second)
 	 * <li>Force Charge/Discharge mode (e.g. -1 A to enforce charge/discharge)
 	 * </ul>
-	 * 
+	 *
 	 * @param battery the {@link Battery}
 	 * @return the actual allowed current limit, mathematically rounded to [A]
 	 */
 	public synchronized int calculateCurrentLimit(Battery battery) {
 		// Read input parameters from Battery
-		Integer minCellVoltage = battery.getMinCellVoltage().get();
-		Integer maxCellVoltage = battery.getMaxCellVoltage().get();
-		Integer minCellTemperature = battery.getMinCellTemperature().get();
-		Integer maxCellTemperature = battery.getMaxCellTemperature().get();
+		var minCellVoltage = battery.getMinCellVoltage().get();
+		var maxCellVoltage = battery.getMaxCellVoltage().get();
+		var minCellTemperature = battery.getMinCellTemperature().get();
+		var maxCellTemperature = battery.getMaxCellTemperature().get();
 		IntegerReadChannel bpBmsChannel = battery.channel(this.getBpBmsChannelId());
-		Integer bpBms = bpBmsChannel.value().get();
+		var bpBms = bpBmsChannel.value().get();
 
 		// Update 'bmsMaxEverAllowedCurrent'
 		this.bmsMaxEverCurrent = TypeUtils.max(this.bmsMaxEverCurrent, bpBms);
@@ -216,19 +217,19 @@ public abstract class AbstractMaxCurrentHandler {
 		 * Get all limits
 		 */
 		// Calculate Ampere limit for Min-Cell-Voltage
-		final Double minCellVoltageLimit = this.getMinCellVoltageToPercentLimit(minCellVoltage);
+		final var minCellVoltageLimit = this.getMinCellVoltageToPercentLimit(minCellVoltage);
 		// Calculate Ampere limit for Max-Cell-Voltage
-		final Double maxCellVoltageLimit = this.getMaxCellVoltageToPercentLimit(maxCellVoltage);
+		final var maxCellVoltageLimit = this.getMaxCellVoltageToPercentLimit(maxCellVoltage);
 		// Calculate Ampere limit for Min-Cell-Temperature
-		final Double minCellTemperatureLimit = this
+		final var minCellTemperatureLimit = this
 				.percentToAmpere(this.temperatureToPercent.getValue(minCellTemperature));
 		// Calculate Ampere limit for Max-Cell-Temperature
-		final Double maxCellTemperatureLimit = this
+		final var maxCellTemperatureLimit = this
 				.percentToAmpere(this.temperatureToPercent.getValue(maxCellTemperature));
 		// Calculate Max Increase Ampere Limit
-		final Double maxIncreaseAmpereLimit = this.getMaxIncreaseAmpereLimit();
+		final var maxIncreaseAmpereLimit = this.getMaxIncreaseAmpereLimit();
 		// Calculate Force Current
-		final Double forceCurrent = this.getForceCurrent(minCellVoltage, maxCellVoltage);
+		final var forceCurrent = this.getForceCurrent(minCellVoltage, maxCellVoltage);
 
 		/*
 		 * Store limits in Channels. If value is 'null', store the bmsMaxEverCurrent
@@ -247,16 +248,18 @@ public abstract class AbstractMaxCurrentHandler {
 				.setNextValue(TypeUtils.orElse(forceCurrent, this.bmsMaxEverCurrent));
 
 		// Get the minimum limit of all limits in Ampere
-		Double limit = TypeUtils.min(TypeUtils.toDouble(bpBms), minCellVoltageLimit, maxCellVoltageLimit,
+		var limit = TypeUtils.min(TypeUtils.toDouble(bpBms), minCellVoltageLimit, maxCellVoltageLimit,
 				minCellTemperatureLimit, maxCellTemperatureLimit, maxIncreaseAmpereLimit, forceCurrent);
 
-		// Battery not started? Set '0' to block charge/discharge
-		if (!battery.isStarted()) {
-			limit = 0.;
-		}
-
-		// No limit? Set '0' to block charge/discharge
-		if (limit == null) {
+		// Set '0' to block charge/discharge?
+		if (
+		// Battery not started?
+		!battery.isStarted()
+				// No limit?
+				|| limit == null
+				// No value from BMS and no force charge/discharge?
+				|| limit > 0 && bpBms == null //
+		) {
 			limit = 0.;
 		}
 
@@ -268,19 +271,19 @@ public abstract class AbstractMaxCurrentHandler {
 	/**
 	 * Calculates the current limit based on Min-/Max-Cell-Voltage according to the
 	 * 'voltageToPercent' characteristics.
-	 * 
+	 *
 	 * <p>
 	 * If for the given 'cellVoltage' value 'voltageToPercent' defines a limitation
 	 * (i.e. the given percentage is less than 100 %), that limitation stays active
 	 * until a future 'cellVoltage' results in no limitation (i.e. percentage == 100
 	 * %). This is implemented to reduce fluctuations due to physical effects in the
 	 * battery.
-	 * 
+	 *
 	 * <p>
 	 * This method internally uses the abstract
 	 * {@link #getActiveCellVoltageToPercentLimit()} method to distinguish between
 	 * active charge/discharge limitations.
-	 * 
+	 *
 	 * @param activeLimit the currently active limit
 	 * @param cellVoltage the cell-voltage
 	 * @return the Cell-Voltage-To-Percent Limit
@@ -289,7 +292,7 @@ public abstract class AbstractMaxCurrentHandler {
 		if (cellVoltage == null) {
 			return null;
 		}
-		Double percentage = this.voltageToPercent.getValue(cellVoltage);
+		var percentage = this.voltageToPercent.getValue(cellVoltage);
 		if (percentage == null) {
 			return null;
 		}
@@ -325,22 +328,22 @@ public abstract class AbstractMaxCurrentHandler {
 	/**
 	 * Calculates the maximum increase limit in Ampere from the
 	 * 'maxIncreasePerSecond' parameter.
-	 * 
+	 *
 	 * <p>
 	 * If maxIncreasePerSecond is 0.5, last limit was 10 A and 1 second passed, this
 	 * method returns 10.5.
-	 * 
+	 *
 	 * @return the limit or null
 	 */
 	protected synchronized Double getMaxIncreaseAmpereLimit() {
 		if (this.maxIncreasePerSecond == null) {
 			return null;
 		}
-		Instant now = Instant.now(this.clockProvider.getClock());
+		var now = Instant.now(this.clockProvider.getClock());
 		final Double result;
 		if (this.lastResultTimestamp != null && this.lastCurrentLimit != null) {
 			result = this.lastCurrentLimit
-					+ (Duration.between(this.lastResultTimestamp, now).toMillis() * this.maxIncreasePerSecond) //
+					+ Duration.between(this.lastResultTimestamp, now).toMillis() * this.maxIncreasePerSecond //
 							/ 1000.; // convert [mA] to [A]
 		} else {
 			result = 0.;
@@ -351,13 +354,13 @@ public abstract class AbstractMaxCurrentHandler {
 
 	/**
 	 * Calculates the Ampere limit in Force Charge/Discharge mode. Returns:
-	 * 
+	 *
 	 * <ul>
 	 * <li>-1 -> in force charge/discharge mode
 	 * <li>0 -> in block discharge/charge mode
 	 * <li>null -> otherwise
 	 * </ul>
-	 * 
+	 *
 	 * @param minCellVoltage the Min-Cell-Voltage, possibly null
 	 * @param maxCellVoltage the Max-Cell-Voltage, possibly null
 	 * @return the Current, possibly null
@@ -390,7 +393,9 @@ public abstract class AbstractMaxCurrentHandler {
 		case WAIT_FOR_FORCE_MODE:
 			return null;
 		case FORCE_MODE:
-			return -1.;
+			// TODO Plan is making the value adaptive, i.e. start with 1 A; if voltage still
+			// decreases, then slowly increase force charge current.
+			return -2.;
 		case BLOCK_MODE:
 			return 0.;
 		}
@@ -401,13 +406,13 @@ public abstract class AbstractMaxCurrentHandler {
 	/**
 	 * Convert a Percent value to a concrete Ampere value in [A] by multiplying it
 	 * with 'bmsMaxEverAllowedChargeCurrent'.
-	 * 
+	 *
 	 * <ul>
 	 * <li>null % -> null
 	 * <li>0 % -> 0
 	 * <li>anything else -> calculate percent; at least '1 A'.
 	 * </ul>
-	 * 
+	 *
 	 * @param percent the percent value in [0,1]
 	 * @return the ampere value in [A]
 	 */

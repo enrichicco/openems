@@ -17,6 +17,7 @@ import io.openems.common.exceptions.OpenemsException;
 import io.openems.edge.bridge.modbus.api.AbstractOpenemsModbusComponent;
 import io.openems.edge.bridge.modbus.api.BridgeModbus;
 import io.openems.edge.bridge.modbus.api.ElementToChannelConverter;
+import io.openems.edge.bridge.modbus.api.ModbusComponent;
 import io.openems.edge.bridge.modbus.api.ModbusProtocol;
 import io.openems.edge.bridge.modbus.api.element.FloatDoublewordElement;
 import io.openems.edge.bridge.modbus.api.task.FC3ReadRegistersTask;
@@ -31,7 +32,7 @@ import io.openems.edge.meter.api.SymmetricMeter;
 @Designate(ocd = Config.class, factory = true)
 @Component(name = "Meter.Weidmueller.525", immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class MeterWeidmueller525 extends AbstractOpenemsModbusComponent
-		implements AsymmetricMeter, SymmetricMeter, OpenemsComponent, ModbusSlave {
+		implements AsymmetricMeter, SymmetricMeter, OpenemsComponent, ModbusComponent, ModbusSlave {
 
 	private MeterType meterType = MeterType.PRODUCTION;
 
@@ -41,6 +42,7 @@ public class MeterWeidmueller525 extends AbstractOpenemsModbusComponent
 	public MeterWeidmueller525() {
 		super(//
 				OpenemsComponent.ChannelId.values(), //
+				ModbusComponent.ChannelId.values(), //
 				SymmetricMeter.ChannelId.values(), //
 				AsymmetricMeter.ChannelId.values(), //
 				WeidmuellerChannelId.values() //
@@ -138,7 +140,7 @@ public class MeterWeidmueller525 extends AbstractOpenemsModbusComponent
 						m(WeidmuellerChannelId.HARMONIC_THD_VOLT_L2N, new FloatDoublewordElement(19112)), //
 						m(WeidmuellerChannelId.HARMONIC_THD_VOLT_L3N, new FloatDoublewordElement(19114)), //
 						m(WeidmuellerChannelId.HARMONIC_THD_CURRENT_L1N, new FloatDoublewordElement(19116)), //
-						m(WeidmuellerChannelId.HARMONIC_THD_VOLT_L2N, new FloatDoublewordElement(19118)), //
+						m(WeidmuellerChannelId.HARMONIC_THD_CURRENT_L2N, new FloatDoublewordElement(19118)), //
 						m(WeidmuellerChannelId.HARMONIC_THD_CURRENT_L3N, new FloatDoublewordElement(19120))));
 	}
 

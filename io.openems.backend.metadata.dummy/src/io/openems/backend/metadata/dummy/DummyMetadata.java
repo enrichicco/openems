@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Activate;
@@ -19,14 +18,18 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonObject;
+
 import io.openems.backend.common.metadata.AbstractMetadata;
 import io.openems.backend.common.metadata.Edge;
 import io.openems.backend.common.metadata.Edge.State;
 import io.openems.backend.common.metadata.Metadata;
 import io.openems.backend.common.metadata.User;
 import io.openems.common.channel.Level;
+import io.openems.common.exceptions.NotImplementedException;
 import io.openems.common.exceptions.OpenemsError;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
+import io.openems.common.jsonrpc.request.UpdateUserLanguageRequest.Language;
 import io.openems.common.session.Role;
 import io.openems.common.types.EdgeConfig;
 import io.openems.common.types.EdgeConfigDiff;
@@ -49,30 +52,32 @@ public class DummyMetadata extends AbstractMetadata implements Metadata {
 	private final Map<String, User> users = new HashMap<>();
 	private final Map<String, MyEdge> edges = new HashMap<>();
 
+	private Language defaultLanguage = Language.DE;
+
 	public DummyMetadata() {
 		super("Metadata.Dummy");
 		this.setInitialized();
 	}
 
 	@Activate
-	void activate() {
+	private void activate() {
 		this.logInfo(this.log, "Activate");
 	}
 
 	@Deactivate
-	void deactivate() {
+	private void deactivate() {
 		this.logInfo(this.log, "Deactivate");
 	}
 
 	@Override
 	public User authenticate(String username, String password) throws OpenemsNamedException {
-		String name = "User #" + this.nextUserId.incrementAndGet();
-		String token = UUID.randomUUID().toString();
-		TreeMap<String, Role> roles = new TreeMap<>();
+		var name = "User #" + this.nextUserId.incrementAndGet();
+		var token = UUID.randomUUID().toString();
+		var roles = new TreeMap<String, Role>();
 		for (String edgeId : this.edges.keySet()) {
 			roles.put(edgeId, Role.ADMIN);
 		}
-		User user = new User(username, name, token, Role.ADMIN, roles);
+		var user = new User(username, name, token, Role.ADMIN, roles, this.defaultLanguage.name());
 		this.users.put(user.getId(), user);
 		return user;
 	}
@@ -94,16 +99,17 @@ public class DummyMetadata extends AbstractMetadata implements Metadata {
 
 	@Override
 	public Optional<String> getEdgeIdForApikey(String apikey) {
-		Optional<MyEdge> edgeOpt = this.edges.values().stream() //
+		var edgeOpt = this.edges.values().stream() //
 				.filter(edge -> apikey.equals(edge.getApikey())) //
 				.findFirst();
 		if (edgeOpt.isPresent()) {
 			return Optional.ofNullable(edgeOpt.get().getId());
 		}
 		// not found. Is apikey a valid Edge-ID?
-		Optional<Integer> idOpt = DummyMetadata.parseNumberFromName(apikey);
+		var idOpt = DummyMetadata.parseNumberFromName(apikey);
 		int id;
 		String edgeId;
+		String setupPassword;
 		if (idOpt.isPresent()) {
 			edgeId = apikey;
 			id = idOpt.get();
@@ -112,7 +118,8 @@ public class DummyMetadata extends AbstractMetadata implements Metadata {
 			id = this.nextEdgeId.incrementAndGet();
 			edgeId = "edge" + id;
 		}
-		MyEdge edge = new MyEdge(edgeId, apikey, "OpenEMS Edge #" + id, State.ACTIVE, "", "", Level.OK,
+		setupPassword = edgeId;
+		var edge = new MyEdge(edgeId, apikey, setupPassword, "OpenEMS Edge #" + id, State.ACTIVE, "", "", Level.OK,
 				new EdgeConfig());
 		edge.onSetConfig(config -> {
 			this.logInfo(this.log, "Edge [" + edgeId + "]. Update config: "
@@ -121,6 +128,19 @@ public class DummyMetadata extends AbstractMetadata implements Metadata {
 		this.edges.put(edgeId, edge);
 		return Optional.ofNullable(edgeId);
 
+	}
+
+	@Override
+	public Optional<Edge> getEdgeBySetupPassword(String setupPassword) {
+		var edgeOpt = this.edges.values().stream().filter(edge -> edge.getSetupPassword().equals(setupPassword))
+				.findFirst();
+
+		if (edgeOpt.isPresent()) {
+			var edge = edgeOpt.get();
+			return Optional.of(edge);
+		}
+
+		return Optional.empty();
 	}
 
 	@Override
@@ -141,9 +161,9 @@ public class DummyMetadata extends AbstractMetadata implements Metadata {
 
 	private static Optional<Integer> parseNumberFromName(String name) {
 		try {
-			Matcher matcher = NAME_NUMBER_PATTERN.matcher(name);
+			var matcher = DummyMetadata.NAME_NUMBER_PATTERN.matcher(name);
 			if (matcher.find()) {
-				String nameNumberString = matcher.group(1);
+				var nameNumberString = matcher.group(1);
 				return Optional.ofNullable(Integer.parseInt(nameNumberString));
 			}
 		} catch (NullPointerException e) {
@@ -151,4 +171,40 @@ public class DummyMetadata extends AbstractMetadata implements Metadata {
 		}
 		return Optional.empty();
 	}
+
+	@Override
+	public void addEdgeToUser(User user, Edge edge) throws OpenemsNamedException {
+		throw new NotImplementedException("DummyMetadata.addEdgeToUser()");
+	}
+
+	@Override
+	public Map<String, Object> getUserInformation(User user) throws OpenemsNamedException {
+		throw new NotImplementedException("DummyMetadata.getUserInformation()");
+	}
+
+	@Override
+	public void setUserInformation(User user, JsonObject jsonObject) throws OpenemsNamedException {
+		throw new NotImplementedException("DummyMetadata.setUserInformation()");
+	}
+
+	@Override
+	public byte[] getSetupProtocol(User user, int setupProtocolId) throws OpenemsNamedException {
+		throw new IllegalArgumentException("DummyMetadata.getSetupProtocol() is not implemented");
+	}
+
+	@Override
+	public int submitSetupProtocol(User user, JsonObject jsonObject) {
+		throw new IllegalArgumentException("DummyMetadata.submitSetupProtocol() is not implemented");
+	}
+
+	@Override
+	public void registerUser(JsonObject jsonObject) throws OpenemsNamedException {
+		throw new IllegalArgumentException("DummyMetadata.registerUser() is not implemented");
+	}
+
+	@Override
+	public void updateUserLanguage(User user, Language language) throws OpenemsNamedException {
+		this.defaultLanguage = language;
+	}
+
 }

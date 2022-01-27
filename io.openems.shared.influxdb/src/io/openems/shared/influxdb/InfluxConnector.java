@@ -26,6 +26,7 @@ import com.influxdb.client.write.Point;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
+import io.openems.common.OpenemsOEM;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.exceptions.OpenemsException;
 import io.openems.common.types.ChannelAddress;
@@ -263,7 +264,7 @@ public class InfluxConnector {
 		b.append(InfluxConnector.toChannelAddressStringEnergy(channels));
 		b.append(" FROM data WHERE ");
 		if (influxEdgeId.isPresent()) {
-			b.append(InfluxConstants.TAG + " = '" + influxEdgeId.get() + "' AND ");
+			b.append(OpenemsOEM.INFLUXDB_TAG + " = '" + influxEdgeId.get() + "' AND ");
 		}
 		b.append("time > ");
 		b.append(String.valueOf(fromDate.toEpochSecond()));
@@ -313,7 +314,7 @@ public class InfluxConnector {
 		b.append(InfluxConnector.toChannelAddressStringNonNegativeDifferenceLast(channels));
 		b.append(" FROM data WHERE ");
 		if (influxEdgeId.isPresent()) {
-			b.append(InfluxConstants.TAG + " = '" + influxEdgeId.get() + "' AND ");
+			b.append(OpenemsOEM.INFLUXDB_TAG + " = '" + influxEdgeId.get() + "' AND ");
 		}
 		b.append("time > ");
 		b.append(String.valueOf(fromDate.toEpochSecond()));
@@ -356,7 +357,7 @@ public class InfluxConnector {
 		query.append(InfluxConnector.toChannelAddressStringData(channels));
 		query.append(" FROM data WHERE ");
 		if (influxEdgeId.isPresent()) {
-			query.append(InfluxConstants.TAG + " = '" + influxEdgeId.get() + "' AND ");
+			query.append(OpenemsOEM.INFLUXDB_TAG + " = '" + influxEdgeId.get() + "' AND ");
 		}
 		query.append("time > ");
 		query.append(String.valueOf(fromDate.toEpochSecond()));
