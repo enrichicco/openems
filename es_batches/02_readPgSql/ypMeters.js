@@ -233,10 +233,20 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
 
   let lastRow = timeSeries[0];
   let yyy = 0;
+  let lastCycle=false;
   for(yyy = timeStep; yyy < timeSeries.length; yyy += timeStep) {
- 
+    
+    /*
+    if (yyy == timeSeries.length) {
+      yyy -=1;
+      timeStep -=1;
+      lastCycle=true;
+    }
+    */
+
+    //yyy= (timeSeries.length -1) - (timeStep -1)
     const theRow = timeSeries[yyy];
-    // console.log(`The Row:`,  theRow);
+     // console.log(`The Row:`,  theRow);
     // billing meter readings
     var totalBillAtThisStep = sumPartsOrWorkOnTotals(billMeterOnEdgeDescriptor, theRow);
     totalsContainer.KWHTotals.introArray[yyy] = totalsContainer.KWHTotals.introArray[yyy] ?? sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
@@ -307,7 +317,9 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
     const userPow_fromIntro = thisStepBill_intro * (1 - totalsContainer.KWHTotals.percentIntroAndSolar4User_solar);
     
     totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromProd += userPow_fromProd;
-    totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromIntro += userPow_fromIntro;                                    
+    totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromIntro += userPow_fromIntro;  
+    
+
                                           
     buildOffsetMeter(theMeterWeAreBilling
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_allParts
@@ -315,6 +327,7 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_prod
                       , yyy
                       , thisStepBill_intro, userPow_fromIntro, userPow_fromProd, meterInOffsetFlag);
+
 
     
     if(meterInOffsetFlag){
@@ -341,11 +354,20 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
     // totalIntroPreviousStep = sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
     // totalProdPreviousStep = sumPartsOrWorkOnTotals(prodMeterOnEdgeDescriptor, theRow);
     lastRow = theRow;
+
+    /*
+    if (lastCycle) {
+      timeStep += 1;
+      yyy += 1;
+    }
+    */
   };
+
   // set final values as red from db at the end...
   totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].billAtEnd = totalBillPreviousStep;
-  totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[yyy-timeStep] ;
-  totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[yyy-timeStep];
+  //TODO check if -1 is correct. i removed -timeStep
+  totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[yyy - timeStep] ;
+  totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[yyy - timeStep];
 
 
   return meterInOffsetFlag ? 1 : 0;

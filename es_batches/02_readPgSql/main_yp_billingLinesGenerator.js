@@ -175,8 +175,8 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
   //
   //this constant is number of mesurement intervals. 
   // 2022.05.25 - bonde : this number times 5s - 
-  const timeStep = 180;
-  //3
+  const timeStep = 1;
+  //
   //
   // first of all, load read tasks list
   const readTasks = await pgLib.client(ypPgQueries.generateReadTasksQuery());
