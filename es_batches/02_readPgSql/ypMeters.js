@@ -247,9 +247,6 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
   let lastCycle=false;
   for(yyy = timeStep; yyy < timeSeries.length; yyy += timeStep) {
     const theRow = timeSeries[yyy];
-
-    
-    // console.log(`The Row:`,  theRow);
     // billing meter readings
     var totalBillAtThisStep = sumPartsOrWorkOnTotals(billMeterOnEdgeDescriptor, theRow);
     totalsContainer.KWHTotals.introArray[yyy] = totalsContainer.KWHTotals.introArray[yyy] ?? sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
