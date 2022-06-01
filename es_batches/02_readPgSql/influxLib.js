@@ -32,6 +32,11 @@ function influxAccount(dbName, _fields){
 
 //
 // build fields schema info
+function generateInfluxFieldsDescriptorForTime(){
+  return {"time" : Influx.FieldType.INTEGER};
+
+}
+
 function generateInfluxFieldsDescriptors(meterName, _fields){
 
   _fields[`${meterName}/EnergyExpFeact1`] = Influx.FieldType.FLOAT; 
@@ -60,6 +65,7 @@ function startInfluxConnection(dbName, _fields){
 
 module.exports = {
   influxAccount,
+  generateInfluxFieldsDescriptorForTime,
   generateInfluxFieldsDescriptors,
   startInfluxConnection
 }

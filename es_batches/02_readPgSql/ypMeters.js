@@ -56,18 +56,29 @@ nibble 1:
 //
 
 function sumPartsOrWorkOnTotals(billMeterOnEdgeDescriptor, theRow) {
+  const valCF1 = theRow[billMeterOnEdgeDescriptor.colConsForF1]; // ?? 0;
+  const valCF2 = theRow[billMeterOnEdgeDescriptor.colConsForF2]; // ?? 0;
+  const valCF3 = theRow[billMeterOnEdgeDescriptor.colConsForF3]; // ?? 0;
+  const valCFSys = theRow[billMeterOnEdgeDescriptor.colConsForFSys]; // ?? 0;
+
+  const valPF1 = theRow[billMeterOnEdgeDescriptor.colProdForF1]; // ?? 0;
+  const valPF2 = theRow[billMeterOnEdgeDescriptor.colProdForF2]; // ?? 0;
+  const valPF3 = theRow[billMeterOnEdgeDescriptor.colProdForF3]; // ?? 0;
+  const valPFSys = theRow[billMeterOnEdgeDescriptor.colProdForFSys]; // ?? 0;
+
+
   const consumption = (billMeterOnEdgeDescriptor.sumModeFlag ? 
-    billMeterOnEdgeDescriptor.signF1 * theRow[billMeterOnEdgeDescriptor.colConsForF1] 
-    + billMeterOnEdgeDescriptor.signF2 * theRow[billMeterOnEdgeDescriptor.colConsForF2] 
-    + billMeterOnEdgeDescriptor.signF3 * theRow[billMeterOnEdgeDescriptor.colConsForF3] 
+    billMeterOnEdgeDescriptor.signF1 * valCF1 
+    + billMeterOnEdgeDescriptor.signF2 * valCF2 
+    + billMeterOnEdgeDescriptor.signF3 * valCF3 
     : 
-    billMeterOnEdgeDescriptor.signFSys * theRow[billMeterOnEdgeDescriptor.colConsForFSys]);  
+    billMeterOnEdgeDescriptor.signFSys * valCFSys);  
   const production = (billMeterOnEdgeDescriptor.sumModeFlag ? 
-    billMeterOnEdgeDescriptor.signF1 * theRow[billMeterOnEdgeDescriptor.colProdForF1] 
-    + billMeterOnEdgeDescriptor.signF2 * theRow[billMeterOnEdgeDescriptor.colProdForF2] 
-    + billMeterOnEdgeDescriptor.signF3 * theRow[billMeterOnEdgeDescriptor.colProdForF3] 
+    billMeterOnEdgeDescriptor.signF1 * valPF1
+    + billMeterOnEdgeDescriptor.signF2 * valPF2
+    + billMeterOnEdgeDescriptor.signF3 * valPF3 
     : 
-    billMeterOnEdgeDescriptor.signFSys * theRow[billMeterOnEdgeDescriptor.colProdForFSys]);  
+    billMeterOnEdgeDescriptor.signFSys * valPFSys);  
   
   return {
     consumption,
@@ -231,11 +242,12 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
   totalsContainer.KWHTotals.introArray = totalsContainer.KWHTotals.introArray ?? [totalsContainer.KWHTotals.introAtStart];
   totalsContainer.KWHTotals.prodArray = totalsContainer.KWHTotals.prodArray ?? [totalsContainer.KWHTotals.prodAtStart]; // Array(1).fill(-1);
 
-  let lastRow = timeSeries[0];
+  // let lastRow = timeSeries[0];
   let yyy = 0;
   for(yyy = timeStep; yyy < timeSeries.length; yyy += timeStep) {
- 
     const theRow = timeSeries[yyy];
+
+    
     // console.log(`The Row:`,  theRow);
     // billing meter readings
     var totalBillAtThisStep = sumPartsOrWorkOnTotals(billMeterOnEdgeDescriptor, theRow);
@@ -307,7 +319,10 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
     const userPow_fromIntro = thisStepBill_intro * (1 - totalsContainer.KWHTotals.percentIntroAndSolar4User_solar);
     
     totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromProd += userPow_fromProd;
-    totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromIntro += userPow_fromIntro;                                    
+    totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromIntro += userPow_fromIntro;
+    if (Math.abs(userPow_fromProd) > 100) {
+      conmsole.log("ahia");
+    }                                   
                                           
     buildOffsetMeter(theMeterWeAreBilling
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_allParts
@@ -318,7 +333,7 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
 
     
     if(meterInOffsetFlag){
-      console.log(keyForThisMeterResult);
+      // console.log(keyForThisMeterResult);
 
       //eval kappa for this step
       const steppo = {
@@ -340,7 +355,7 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
     totalBillPreviousStep = totalBillAtThisStep;
     // totalIntroPreviousStep = sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
     // totalProdPreviousStep = sumPartsOrWorkOnTotals(prodMeterOnEdgeDescriptor, theRow);
-    lastRow = theRow;
+    // lastRow = theRow;
   };
   // set final values as red from db at the end...
   totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].billAtEnd = totalBillPreviousStep;

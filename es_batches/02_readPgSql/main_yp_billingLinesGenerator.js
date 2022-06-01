@@ -128,7 +128,10 @@ function appendInfluxMeterQueryFields(theEdgeForThisMeas, theMeter){
 // build hyperInfluxQuery !!!
 function hyperInfluxQuery(theEdgeForThisMeas) {
   theEdgeForThisMeas.fullInfluxQueryFields = "";
-  theEdgeForThisMeas.fullInfluxFieldsMetadata = {};
+  //
+  // generate fields metadata infos container with basic (time field) data type
+  theEdgeForThisMeas.fullInfluxFieldsMetadata = inflxLib.generateInfluxFieldsDescriptorForTime();
+
   if(!!theEdgeForThisMeas.introductionMeter) {
     theEdgeForThisMeas.introductionMeter.influxDataSetFieldsNames = ypInflxQueries.generateInfluxDbQueryMeterSection(theEdgeForThisMeas.introductionMeter.MeterOnEdge);
     appendInfluxMeterQueryFields(theEdgeForThisMeas, theEdgeForThisMeas.introductionMeter);
@@ -152,7 +155,43 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
     }
   } 
 }
- 
+//
+//
+function findFirstGood(result) {
+  for(let ggg in result) {
+    let thisIsGood = true;
+    for (let ttt in result[ggg]){
+      if (result[ggg][ttt] === null) {
+        thisIsGood = false; 
+        continue;
+      }
+    }
+    if (thisIsGood) {
+      return ggg;
+    }
+  }
+  return -1;
+}
+function RectifyRow(theRow, theSampleRow) {
+  for(let tskey in theRow) {
+    if(theRow[tskey] === null) {
+      theRow[tskey] = theSampleRow[tskey];
+    }
+  }
+
+}
+//
+//
+function resultsDenullifier(theResults) {
+  const minIndex = findFirstGood(theResults);
+  if (minIndex > 0) {
+    RectifyRow(theResults[0], theResults[minIndex]);
+  }
+  for (yyy=1; yyy< theResults.length; yyy++){
+    RectifyRow(theResults[yyy],theResults[yyy-1])
+  }
+
+}
 
 
 //
@@ -175,7 +214,7 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
   //
   //this constant is number of mesurement intervals. 
   // 2022.05.25 - bonde : this number times 5s - 
-  const timeStep = 180;
+  const timeStep = 1; // 180, 120, 60, 12, 1;
   //3
   //
   // first of all, load read tasks list
@@ -238,7 +277,7 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
       for (var key in  measurementClusters.readings) {
         zzz++;
         theEdgeForThisMeas =  measurementClusters.readings[key];
-        console.log(`building data queries for edge ${theEdgeForThisMeas.idEdge}`)
+        console.log(`building data queries for edge ${theEdgeForThisMeas.idEdge}`);
         hyperInfluxQuery(theEdgeForThisMeas);
         // console.log(theEdge);
         // console.log(theEdge.fullInfluxQueryFields);
@@ -249,6 +288,11 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
         try {
           theEdgeForThisMeas.influxDataPromiseResult = await influxConn.query(theEdgeForThisMeas.fullInfluxQuery);
           const result = theEdgeForThisMeas.influxDataPromiseResult;
+          resultsDenullifier(result);
+          //
+          // spy function on node console for nulls 
+          // for(let ggg in result) {for (let ttt in result[ggg]){ if (result[ggg][ttt] === null) {console.log("ahi", ggg, result[ggg]); break;}}}
+          //
           if (!result || (result.length < 1)) {
               console.log(`no data on DB ${theEdgeForThisMeas.influxDb} --- Edge ${theEdgeForThisMeas.idEdge}-${theEdgeForThisMeas.edgeDesc} in dates interval ${measureDateStart} to ${measureDateEnd}`);
           } else {
