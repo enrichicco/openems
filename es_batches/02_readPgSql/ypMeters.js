@@ -244,11 +244,9 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
 
   // let lastRow = timeSeries[0];
   let yyy = 0;
+  let lastCycle=false;
   for(yyy = timeStep; yyy < timeSeries.length; yyy += timeStep) {
     const theRow = timeSeries[yyy];
-
-    
-    // console.log(`The Row:`,  theRow);
     // billing meter readings
     var totalBillAtThisStep = sumPartsOrWorkOnTotals(billMeterOnEdgeDescriptor, theRow);
     totalsContainer.KWHTotals.introArray[yyy] = totalsContainer.KWHTotals.introArray[yyy] ?? sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
@@ -331,6 +329,7 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
                       , yyy
                       , thisStepBill_intro, userPow_fromIntro, userPow_fromProd, meterInOffsetFlag);
 
+
     
     if(meterInOffsetFlag){
       // console.log(keyForThisMeterResult);
@@ -357,10 +356,12 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
     // totalProdPreviousStep = sumPartsOrWorkOnTotals(prodMeterOnEdgeDescriptor, theRow);
     // lastRow = theRow;
   };
+
   // set final values as red from db at the end...
   totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].billAtEnd = totalBillPreviousStep;
-  totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[yyy-timeStep] ;
-  totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[yyy-timeStep];
+  //TODO check if -1 is correct. i removed -timeStep
+  totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[yyy - timeStep] ;
+  totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[yyy - timeStep];
 
 
   return meterInOffsetFlag ? 1 : 0;
