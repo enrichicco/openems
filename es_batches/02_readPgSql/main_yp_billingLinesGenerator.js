@@ -34,7 +34,6 @@ function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
   const KWHTotals = theEdgeForThisMeas.KWHTotals;
 
   for(kkk = timeStep; kkk < mitbill.steppi.length; kkk+=timeStep){
-
     const kappo = {
       "userPow_introTotal": 0,
       "userPow_fromIntro": 0,
@@ -62,6 +61,7 @@ function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
     
     KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[kkk] = kappo;
   }
+  
 }
 
 function getOrSaveMeasClusterOnClusters(measurementClustersReadings,meterContainer){
@@ -214,7 +214,7 @@ function resultsDenullifier(theResults) {
   //
   //this constant is number of mesurement intervals. 
   // 2022.05.25 - bonde : this number times 5s - 
-  const timeStep = 1; // 180, 120, 60, 12, 1;
+  const timeStep = 720*2; // 180, 60, 12, 1;
   //3
   //
   // first of all, load read tasks list
@@ -282,8 +282,8 @@ function resultsDenullifier(theResults) {
         // console.log(theEdge);
         // console.log(theEdge.fullInfluxQueryFields);
         theEdgeForThisMeas.fullInfluxQuery = ypInflxQueries.generateGivenMetersInfluxDbQuery(theEdgeForThisMeas.fullInfluxQueryFields,measureDateStart,measureDateEnd);
-        console.log("Query will be:");
-        console.log(theEdgeForThisMeas.fullInfluxQuery);
+        //console.log("Query will be:");
+        //console.log(theEdgeForThisMeas.fullInfluxQuery);
         const influxConn = inflxLib.startInfluxConnection(theEdgeForThisMeas.influxDb,theEdgeForThisMeas.fullInfluxFieldsMetadata);
         try {
           theEdgeForThisMeas.influxDataPromiseResult = await influxConn.query(theEdgeForThisMeas.fullInfluxQuery);
@@ -308,7 +308,7 @@ function resultsDenullifier(theResults) {
               billingTotals: {}
             };
             ypMeters.buildTotals(theEdgeForThisMeas, result, timeStep);
-            console.log(`\n\n\n ${theEdgeForThisMeas.influxDb} totals: `, theEdgeForThisMeas.KWHTotals);
+            //console.log(`\n\n\n ${theEdgeForThisMeas.influxDb} totals: `, theEdgeForThisMeas.KWHTotals);
             console.log("Going to insert data in the DB");
             let ciccabc = await pgLib.client(
               'CALL "youpower-billingmeters"."helloWorld"($1)',
@@ -356,7 +356,7 @@ function resultsDenullifier(theResults) {
                   valuesSource.totalKWHBill_partFromIntro
                 ];
               
-              console.log(parametersQuery);
+              //console.log(parametersQuery);
               ciccabc = await pgLib.client(
                 'CALL "youpower-billingmeters"."saveLectureFromMeter"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)',
                 parametersQuery

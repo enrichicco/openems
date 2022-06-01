@@ -199,12 +199,16 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
   // check if measure comes from components or from Sys/total
   const sumModeFlag = (meterReadMode & 0xE0);
   */
-
-
   const keyForThisMeterResult = "meter_" + theMeterWeAreBilling.meterid;
   totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult] = {
-    billAtStart: 0,
-    billAtEnd: 0,
+    billAtStart:{
+      consumption: 0
+      , production: 0
+    },
+    billAtEnd: {
+      consumption: 0
+      , production: 0
+    },
     totalKWHBill_intro: 0,
     totalKWHBill_partFromProd: 0,
     totalKWHBill_partFromIntro: 0,
@@ -213,7 +217,6 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
 
   };
   theMeterWeAreBilling.steppi = [];
-
 
   const billMeterOnEdgeDescriptor = buildMeterReadModes(theMeterWeAreBilling);
   const meterInOffsetFlag = theMeterWeAreBilling.ReadMode & 0xE0;
@@ -244,20 +247,53 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
 
   // let lastRow = timeSeries[0];
   let yyy = 0;
-  let lastCycle=false;
+  let lastRow = timeSeries[0];
   for(yyy = timeStep; yyy < timeSeries.length; yyy += timeStep) {
-    const theRow = timeSeries[yyy];
+    lastRow = evalBillingEvent(yyy, yyy - timeStep, keyForThisMeterResult, billMeterOnEdgeDescriptor, meterInOffsetFlag, totalBillPreviousStep, totalsContainer, theMeterWeAreBilling, timeSeries, introMeterOnEdgeDescriptor, prodMeterOnEdgeDescriptor);
+  }
+  //
+  //if the last one was not calculated in the billing, calulate the last one with the last one of the cyclde  
+  if (lastRow !== timeSeries[timeSeries.length - 1]){
+    console.log("stop");
+    lastRow = evalBillingEvent(timeSeries.length - 1, yyy - timeStep, keyForThisMeterResult, billMeterOnEdgeDescriptor, meterInOffsetFlag, totalBillPreviousStep, totalsContainer, theMeterWeAreBilling, timeSeries, introMeterOnEdgeDescriptor, prodMeterOnEdgeDescriptor);
+  }
+  // set final values as red from db at the end...
+  totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].billAtEnd = totalBillPreviousStep;
+  //TODO check if -1 is correct. i removed -timeStep
+  totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[timeSeries.length -1] ;
+  totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[timeSeries.length -1];
+
+
+  return meterInOffsetFlag ? 1 : 0;
+}
+
+//
+//function to calculate the billing. 
+//takes a row and the previous row as input and make some calculation
+
+function evalBillingEvent( theRowNumber
+        , lastRowNumber
+        , keyForThisMeterResult
+        , billMeterOnEdgeDescriptor
+        , meterInOffsetFlag
+        , totalBillPreviousStep
+        , totalsContainer
+        , theMeterWeAreBilling
+        , timeSeries
+        , introMeterOnEdgeDescriptor
+        , prodMeterOnEdgeDescriptor){
+    const theRow = timeSeries[theRowNumber];
     // billing meter readings
     var totalBillAtThisStep = sumPartsOrWorkOnTotals(billMeterOnEdgeDescriptor, theRow);
-    totalsContainer.KWHTotals.introArray[yyy] = totalsContainer.KWHTotals.introArray[yyy] ?? sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
-    totalsContainer.KWHTotals.prodArray[yyy] = totalsContainer.KWHTotals.prodArray[yyy] ?? sumPartsOrWorkOnTotals(prodMeterOnEdgeDescriptor, theRow);
+    totalsContainer.KWHTotals.introArray[theRowNumber] = totalsContainer.KWHTotals.introArray[theRowNumber] ?? sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
+    totalsContainer.KWHTotals.prodArray[theRowNumber] = totalsContainer.KWHTotals.prodArray[theRowNumber] ?? sumPartsOrWorkOnTotals(prodMeterOnEdgeDescriptor, theRow);
     //
     // eval intro
-    totalsContainer.KWHTotals.totalKWHImport_intro = totalsContainer.KWHTotals.introArray[yyy].consumption - totalsContainer.KWHTotals.introArray[yyy - timeStep].consumption;
-    totalsContainer.KWHTotals.totalKWHImport_prod = totalsContainer.KWHTotals.introArray[yyy].production - totalsContainer.KWHTotals.introArray[yyy - timeStep].production;
+    totalsContainer.KWHTotals.totalKWHImport_intro = totalsContainer.KWHTotals.introArray[theRowNumber].consumption - totalsContainer.KWHTotals.introArray[lastRowNumber].consumption;
+    totalsContainer.KWHTotals.totalKWHImport_prod = totalsContainer.KWHTotals.introArray[theRowNumber].production - totalsContainer.KWHTotals.introArray[lastRowNumber].production;
     //
-    totalsContainer.KWHTotals.totalKWHExport_intro = totalsContainer.KWHTotals.prodArray[yyy].consumption - totalsContainer.KWHTotals.prodArray[yyy - timeStep].consumption;
-    totalsContainer.KWHTotals.totalKWHExport_prod = totalsContainer.KWHTotals.prodArray[yyy].production - totalsContainer.KWHTotals.prodArray[yyy - timeStep].production;
+    totalsContainer.KWHTotals.totalKWHExport_intro = totalsContainer.KWHTotals.prodArray[theRowNumber].consumption - totalsContainer.KWHTotals.prodArray[lastRowNumber].consumption;
+    totalsContainer.KWHTotals.totalKWHExport_prod = totalsContainer.KWHTotals.prodArray[theRowNumber].production - totalsContainer.KWHTotals.prodArray[lastRowNumber].production;
     //
     //
     // evaluate how much power from the solar panels goes to the users and how much goes to the grid....
@@ -269,7 +305,7 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
     // .. and is supposed to be equal to the following
     let assertForExportedEnergyToGrid = totalsContainer.KWHTotals.totalKWHImport_prod - totalSolarPowerToGrid;
     if (assertForExportedEnergyToGrid > 0.01) {
-      console.log(`failed assert for \ntotalsContainer.KWHTotals.totalKWHImport_prod === totalSolarPowerToGrid\n Problem was at yyy= ${yyy}; row follows... `, theRow);
+      console.log(`failed assert for \ntotalsContainer.KWHTotals.totalKWHImport_prod === totalSolarPowerToGrid\n Problem was at theRowNumber= ${theRowNumber}; row follows... `, theRow);
     }
     //
     //
@@ -301,74 +337,59 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
             (totalsContainer.KWHTotals.percentIntroAndSolar4User_intro != 0)
           )
       ) {
-      console.log(`failed assert for \n(1 - totalsContainer.KWHTotals.percentIntroAndSolar4User_solar) - totalsContainer.KWHTotals.percentIntroAndSolar4User_intro\n Problem was at yyy= ${yyy}; row follows... `, theRow);
+      console.log(`failed assert for \n(1 - totalsContainer.KWHTotals.percentIntroAndSolar4User_solar) - totalsContainer.KWHTotals.percentIntroAndSolar4User_intro\n Problem was at theRowNumber= ${theRowNumber}; row follows... `, theRow);
     }
 
     // this billing meter levels...
     const thisStepBill_intro = totalBillAtThisStep.consumption - totalBillPreviousStep.consumption;
-    const thisStepBill_prod = totalBillAtThisStep.production - totalBillPreviousStep.production;; // this is expected to be zero (unless the user puts some enrgy on the net....)
-
+    const thisStepBill_prod = totalBillAtThisStep.production - totalBillPreviousStep.production;; // this is expected to be zero (unless the user puts some enrgy on the net....
 
     // the result
     totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_intro += thisStepBill_intro;
-    
     
     const userPow_fromProd = thisStepBill_intro * totalsContainer.KWHTotals.percentIntroAndSolar4User_solar;
     const userPow_fromIntro = thisStepBill_intro * (1 - totalsContainer.KWHTotals.percentIntroAndSolar4User_solar);
     
     totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromProd += userPow_fromProd;
     totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_partFromIntro += userPow_fromIntro;
+    // safety check: abnormal values ?!?
     if (Math.abs(userPow_fromProd) > 100) {
-      conmsole.log("ahia");
+      console.log("ahia");
     }                                   
                                           
     buildOffsetMeter(theMeterWeAreBilling
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_allParts
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_intro
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_prod
-                      , yyy
+                      , theRowNumber
                       , thisStepBill_intro, userPow_fromIntro, userPow_fromProd, meterInOffsetFlag);
-
-
-    
+    // if the meter is in offest, calculate steppi    
     if(meterInOffsetFlag){
       // console.log(keyForThisMeterResult);
-
       //eval kappa for this step
       const steppo = {
         thisStepBill_intro,
         userPow_fromProd,
         userPow_fromIntro
       };
-      theMeterWeAreBilling.steppi[yyy] = steppo ;
+      theMeterWeAreBilling.steppi[theRowNumber] = steppo ;
     }
 
-
     // should be always zero or near to zero
-    totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_prod += thisStepBill_prod
-
-
+    totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].totalKWHBill_prod += thisStepBill_prod;
 
     //
     // update offsets
-    totalBillPreviousStep = totalBillAtThisStep;
+    totalBillPreviousStep.production = totalBillAtThisStep.production;
+    totalBillPreviousStep.consumption = totalBillAtThisStep.consumption;
     // totalIntroPreviousStep = sumPartsOrWorkOnTotals(introMeterOnEdgeDescriptor, theRow);
     // totalProdPreviousStep = sumPartsOrWorkOnTotals(prodMeterOnEdgeDescriptor, theRow);
-    // lastRow = theRow;
-  };
-
-  // set final values as red from db at the end...
-  totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].billAtEnd = totalBillPreviousStep;
-  //TODO check if -1 is correct. i removed -timeStep
-  totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[yyy - timeStep] ;
-  totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[yyy - timeStep];
-
-
-  return meterInOffsetFlag ? 1 : 0;
+   return theRow;
 }
 
+
 function buildOffsetMeter(theMeterWeAreBilling
-                          , totalBillingOffset_allParts, totalBillingOffset_intro, totalBillingOffset_prod, yyy
+                          , totalBillingOffset_allParts, totalBillingOffset_intro, totalBillingOffset_prod, theRowNumber
                           , userPow_total, userPow_fromIntro, userPow_fromProd, meterInOffsetFlag){
   if (meterInOffsetFlag) {
     return;
@@ -376,12 +397,12 @@ function buildOffsetMeter(theMeterWeAreBilling
 
   //
   //
-  totalBillingOffset_allParts[yyy] = userPow_total +
-                                        (totalBillingOffset_allParts[yyy] ?? 0);
-  totalBillingOffset_intro[yyy] = userPow_fromIntro +                                                           
-                                        (totalBillingOffset_intro[yyy] ?? 0) ;                                                             
-  totalBillingOffset_prod[yyy] = userPow_fromProd + 
-                                        (totalBillingOffset_prod[yyy] ?? 0) ;
+  totalBillingOffset_allParts[theRowNumber] = userPow_total +
+                                        (totalBillingOffset_allParts[theRowNumber] ?? 0);
+  totalBillingOffset_intro[theRowNumber] = userPow_fromIntro +                                                           
+                                        (totalBillingOffset_intro[theRowNumber] ?? 0) ;                                                             
+  totalBillingOffset_prod[theRowNumber] = userPow_fromProd + 
+                                        (totalBillingOffset_prod[theRowNumber] ?? 0) ;
   
 }
 
