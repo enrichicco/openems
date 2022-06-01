@@ -32,6 +32,7 @@ const enableOffsetMode = true;
 // function to calculate kappa in the offset meter
 function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
   const KWHTotals = theEdgeForThisMeas.KWHTotals;
+  let kkk = 0;
 
   for(kkk = timeStep; kkk < mitbill.steppi.length; kkk+=timeStep){
     const kappo = {
@@ -61,7 +62,37 @@ function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
     
     KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[kkk] = kappo;
   }
-  
+  //
+  //The step under is done to ensure the last entry in the array is confronted to the last entry of the cycle
+  if(kkk-timeStep != (mitbill.steppi.length - 1) && mitbill.steppi.length != 0){
+    const kappo = {
+      "userPow_introTotal": 0,
+      "userPow_fromIntro": 0,
+      "userPow_fromProd": 0
+    };
+
+
+    //
+    // eval intro
+    const mainIntro_cons = KWHTotals.introArray[mitbill.steppi.length - 1].consumption - KWHTotals.introArray[kkk - timeStep].consumption;
+    const mainIntro_prod = KWHTotals.introArray[mitbill.steppi.length - 1].production - KWHTotals.introArray[kkk - timeStep].production;
+    //
+    // eval prod
+    const mainProd_prod = KWHTotals.prodArray[mitbill.steppi.length - 1].production - KWHTotals.prodArray[kkk - timeStep].production;
+    const mainprod_prod4users = mainProd_prod - mainIntro_prod;
+
+    //
+    // eval meter under offset ....
+    const totalKWHBill_intro = mainIntro_cons + mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_allParts[mitbill.steppi.length - 1];
+    const totalKWHBill_partFromIntro = mainIntro_cons - KWHTotals.offsetMeter.totalBillingOffset_intro[mitbill.steppi.length - 1];
+    const totalKWHBill_partFromProd = mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_prod[mitbill.steppi.length - 1];
+
+    kappo.userPow_introTotal = mitbill.steppi[mitbill.steppi.length - 1].thisStepBill_intro / (totalKWHBill_intro == 0 ? 1 : totalKWHBill_intro); 
+    kappo.userPow_fromIntro = mitbill.steppi[mitbill.steppi.length - 1].userPow_fromProd / (totalKWHBill_partFromIntro == 0 ? 1 : totalKWHBill_partFromIntro); 
+    kappo.userPow_fromProd = mitbill.steppi[mitbill.steppi.length - 1].userPow_fromIntro / (totalKWHBill_partFromProd == 0 ? 1 : totalKWHBill_partFromProd);
+    
+    KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[mitbill.steppi.length - 1] = kappo;
+  }
 }
 
 function getOrSaveMeasClusterOnClusters(measurementClustersReadings,meterContainer){
@@ -214,7 +245,7 @@ function resultsDenullifier(theResults) {
   //
   //this constant is number of mesurement intervals. 
   // 2022.05.25 - bonde : this number times 5s - 
-  const timeStep = 720*2; // 180, 60, 12, 1;
+  const timeStep = 1; // 180, 60, 12, 1;
   //3
   //
   // first of all, load read tasks list

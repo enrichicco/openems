@@ -372,7 +372,7 @@ function evalBillingEvent( theRowNumber
         userPow_fromProd,
         userPow_fromIntro
       };
-      theMeterWeAreBilling.steppi[theRowNumber] = steppo ;
+      theMeterWeAreBilling.steppi[theRowNumber] = steppo;
     }
 
     // should be always zero or near to zero
