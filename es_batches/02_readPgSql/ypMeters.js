@@ -259,10 +259,10 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
   }
   // set final values as red from db at the end...
   totalsContainer.KWHTotals.billingTotals[keyForThisMeterResult].billAtEnd = totalBillPreviousStep;
-  //TODO check if -1 is correct. i removed -timeStep
+  // check the totals with the last value in the array timeseries
   totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[timeSeries.length -1] ;
   totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[timeSeries.length -1];
-
+  
 
   return meterInOffsetFlag ? 1 : 0;
 }

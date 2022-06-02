@@ -28,7 +28,7 @@ const enableOffsetMode = true;
 //
 
 //
-//TODO find another spot to shift
+//
 // function to calculate kappa in the offset meter
 function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
   const KWHTotals = theEdgeForThisMeas.KWHTotals;
@@ -348,8 +348,13 @@ function resultsDenullifier(theResults) {
             for (var keyyy in theEdgeForThisMeas.KWHTotals.billingTotals){
               const billedMeterReadData = theEdgeForThisMeas.KWHTotals.billingTotals[keyyy];
               const mitbill = billedMeterReadData.meter;
-              //TODO find another spot for this function
+              //TODO check if this is the correct place for this function
+              //this function calculate the offset and the kappa
               calculateKappa(mitbill, timeStep, theEdgeForThisMeas);
+              //TODO check for a better spot
+              //TODO set 5 as a variable that you can take from the json
+              //this const is the MeasInterval - at this time is t=5s. so timeStep * 5 = MeasInterval
+              const measInterval= timeStep * 5;
               const valuesSource = 
                   billedMeterReadData.meter.inOffsetFlag
                      && 
@@ -384,12 +389,13 @@ function resultsDenullifier(theResults) {
   
                   valuesSource.totalKWHBill_intro,
                   valuesSource.totalKWHBill_partFromProd, 
-                  valuesSource.totalKWHBill_partFromIntro
+                  valuesSource.totalKWHBill_partFromIntro,
+                  measInterval
                 ];
               
               //console.log(parametersQuery);
               ciccabc = await pgLib.client(
-                'CALL "youpower-billingmeters"."saveLectureFromMeter"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)',
+                'CALL "youpower-billingmeters"."saveLectureFromMeter"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)',
                 parametersQuery
               );
 
