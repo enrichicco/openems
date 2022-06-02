@@ -262,7 +262,7 @@ function buildTotalsForMeter(totalsContainer, theMeterWeAreBilling, timeSeries, 
   // check the totals with the last value in the array timeseries
   totalsContainer.KWHTotals.introAtEnd = totalsContainer.KWHTotals.introArray[timeSeries.length -1] ;
   totalsContainer.KWHTotals.prodAtEnd = totalsContainer.KWHTotals.prodArray[timeSeries.length -1];
-  
+
 
   return meterInOffsetFlag ? 1 : 0;
 }
@@ -356,13 +356,14 @@ function evalBillingEvent( theRowNumber
     if (Math.abs(userPow_fromProd) > 100) {
       console.log("ahia");
     }                                   
-                                          
+    //20220602 Manuel & Enrico maybe it has to go back to the way it was before
+    //remove totalPowerForUsers and use thisStepBill_intro                                   
     buildOffsetMeter(theMeterWeAreBilling
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_allParts
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_intro
                       , totalsContainer.KWHTotals.offsetMeter.totalBillingOffset_prod
                       , theRowNumber
-                      , thisStepBill_intro, userPow_fromIntro, userPow_fromProd, meterInOffsetFlag);
+                      , totalPowerForUsers, userPow_fromIntro, userPow_fromProd, meterInOffsetFlag);
     // if the meter is in offest, calculate steppi    
     if(meterInOffsetFlag){
       // console.log(keyForThisMeterResult);

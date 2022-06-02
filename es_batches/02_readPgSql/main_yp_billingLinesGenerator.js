@@ -12,8 +12,8 @@ const ypMeters = require("./ypMeters.js");
 const ypPgQueries = require("./ypPgQueries.js");
 const ypInflxQueries = require("./ypInflxQueries.js");
 
-
-const enableOffsetMode = true;
+//Was unsued so we remove for the batchConf in the query
+//const enableOffsetMode = true;
 
 //
 // ================================================================================================================================================================
@@ -241,12 +241,18 @@ function resultsDenullifier(theResults) {
   const clientResult = await pgLib.clientDemo();
   console.log("PG Time with client: " + clientResult.rows[0]["now"]);
 
+  /* ================================================================= */
+  /* ======================TIME STEP IS HERE========================== */
+  /* ================================================================= */
 
   //
-  //this constant is number of mesurement intervals. 
-  // 2022.05.25 - bonde : this number times 5s - 
-  const timeStep = 1; // 180, 60, 12, 1;
-  //3
+  //Take timeStep from batchConf.json file
+  const batchConfig = require('./batchConf.json');
+  const timeStep = batchConfig.timeStep;
+
+  //this const is the MeasInterval - at this time is t=5s. so timeStep * 5 = MeasInterval from batchConf.json file
+  const measInterval= timeStep * batchConfig.measInterval;
+  //
   //
   // first of all, load read tasks list
   const readTasks = await pgLib.client(ypPgQueries.generateReadTasksQuery());
@@ -351,14 +357,10 @@ function resultsDenullifier(theResults) {
               //TODO check if this is the correct place for this function
               //this function calculate the offset and the kappa
               calculateKappa(mitbill, timeStep, theEdgeForThisMeas);
-              //TODO check for a better spot
-              //TODO set 5 as a variable that you can take from the json
-              //this const is the MeasInterval - at this time is t=5s. so timeStep * 5 = MeasInterval
-              const measInterval= timeStep * 5;
               const valuesSource = 
                   billedMeterReadData.meter.inOffsetFlag
                      && 
-                     enableOffsetMode
+                     batchConfig.enableOffsetMode
                       ?
                         billedMeterReadData.valuesInOffset
                             :
