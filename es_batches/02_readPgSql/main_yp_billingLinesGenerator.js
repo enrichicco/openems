@@ -30,69 +30,47 @@ const ypInflxQueries = require("./ypInflxQueries.js");
 //
 //
 // function to calculate kappa in the offset meter
-function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
-  const KWHTotals = theEdgeForThisMeas.KWHTotals;
+function calculateKappa(mitbill, timeStep, KWHTotals){
   let kkk = 0;
 
   for(kkk = timeStep; kkk < mitbill.steppi.length; kkk+=timeStep){
-    const kappo = {
-      "userPow_introTotal": 0,
-      "userPow_fromIntro": 0,
-      "userPow_fromProd": 0
-    };
-
-    //
-    // eval intro
-    const mainIntro_cons = KWHTotals.introArray[kkk].consumption - KWHTotals.introArray[kkk - timeStep].consumption;
-    const mainIntro_prod = KWHTotals.introArray[kkk].production - KWHTotals.introArray[kkk - timeStep].production;
-    //
-    // eval prod
-    const mainProd_prod = KWHTotals.prodArray[kkk].production - KWHTotals.prodArray[kkk - timeStep].production;
-    const mainprod_prod4users = mainProd_prod - mainIntro_prod;
-
-    //
-    // eval meter under offset ....
-    const totalKWHBill_intro = mainIntro_cons + mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_allParts[kkk];
-    const totalKWHBill_partFromIntro = mainIntro_cons - KWHTotals.offsetMeter.totalBillingOffset_intro[kkk];
-    const totalKWHBill_partFromProd = mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_prod[kkk];
-
-    kappo.userPow_introTotal = mitbill.steppi[kkk].thisStepBill_intro / (totalKWHBill_intro == 0 ? 1 : totalKWHBill_intro); 
-    kappo.userPow_fromIntro = mitbill.steppi[kkk].userPow_fromProd / (totalKWHBill_partFromIntro == 0 ? 1 : totalKWHBill_partFromIntro); 
-    kappo.userPow_fromProd = mitbill.steppi[kkk].userPow_fromIntro / (totalKWHBill_partFromProd == 0 ? 1 : totalKWHBill_partFromProd);
-    
-    KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[kkk] = kappo;
+    evalKappo(kkk, kkk-timeStep, mitbill, timeStep, KWHTotals);
   }
+
   //
   //The step under is done to ensure the last entry in the array is confronted to the last entry of the cycle
   if(kkk-timeStep != (mitbill.steppi.length - 1) && mitbill.steppi.length != 0){
-    const kappo = {
-      "userPow_introTotal": 0,
-      "userPow_fromIntro": 0,
-      "userPow_fromProd": 0
-    };
-
-
-    //
-    // eval intro
-    const mainIntro_cons = KWHTotals.introArray[mitbill.steppi.length - 1].consumption - KWHTotals.introArray[kkk - timeStep].consumption;
-    const mainIntro_prod = KWHTotals.introArray[mitbill.steppi.length - 1].production - KWHTotals.introArray[kkk - timeStep].production;
-    //
-    // eval prod
-    const mainProd_prod = KWHTotals.prodArray[mitbill.steppi.length - 1].production - KWHTotals.prodArray[kkk - timeStep].production;
-    const mainprod_prod4users = mainProd_prod - mainIntro_prod;
-
-    //
-    // eval meter under offset ....
-    const totalKWHBill_intro = mainIntro_cons + mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_allParts[mitbill.steppi.length - 1];
-    const totalKWHBill_partFromIntro = mainIntro_cons - KWHTotals.offsetMeter.totalBillingOffset_intro[mitbill.steppi.length - 1];
-    const totalKWHBill_partFromProd = mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_prod[mitbill.steppi.length - 1];
-
-    kappo.userPow_introTotal = mitbill.steppi[mitbill.steppi.length - 1].thisStepBill_intro / (totalKWHBill_intro == 0 ? 1 : totalKWHBill_intro); 
-    kappo.userPow_fromIntro = mitbill.steppi[mitbill.steppi.length - 1].userPow_fromProd / (totalKWHBill_partFromIntro == 0 ? 1 : totalKWHBill_partFromIntro); 
-    kappo.userPow_fromProd = mitbill.steppi[mitbill.steppi.length - 1].userPow_fromIntro / (totalKWHBill_partFromProd == 0 ? 1 : totalKWHBill_partFromProd);
-    
-    KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[mitbill.steppi.length - 1] = kappo;
+    evalKappo(mitbill.steppi.length - 1, kkk - timeStep, mitbill, timeStep, KWHTotals);
   }
+}
+
+//
+//evaluate kappo
+function evalKappo(thisRowNumber, prevRowNumber, mitbill, KWHTotals){
+  const kappo = {
+    "userPow_introTotal": 0,
+    "userPow_fromIntro": 0,
+    "userPow_fromProd": 0
+  };
+  //
+  // eval intro
+  const mainIntro_cons = KWHTotals.introArray[thisRowNumber].consumption - KWHTotals.introArray[prevRowNumber].consumption;
+  const mainIntro_prod = KWHTotals.introArray[thisRowNumber].production - KWHTotals.introArray[prevRowNumber].production;
+  //
+  // eval prod
+  const mainProd_prod = KWHTotals.prodArray[thisRowNumber].production - KWHTotals.prodArray[prevRowNumber].production;
+  const mainprod_prod4users = mainProd_prod - mainIntro_prod;
+  //
+  // eval meter under offset ....
+  const totalKWHBill_intro = mainIntro_cons + mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_allParts[thisRowNumber];
+  const totalKWHBill_partFromIntro = mainIntro_cons - KWHTotals.offsetMeter.totalBillingOffset_intro[thisRowNumber];
+  const totalKWHBill_partFromProd = mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_prod[thisRowNumber];
+
+  kappo.userPow_introTotal = mitbill.steppi[thisRowNumber].thisStepBill_intro / (totalKWHBill_intro == 0 ? 1 : totalKWHBill_intro); 
+  kappo.userPow_fromIntro = mitbill.steppi[thisRowNumber].userPow_fromProd / (totalKWHBill_partFromIntro == 0 ? 1 : totalKWHBill_partFromIntro); 
+  kappo.userPow_fromProd = mitbill.steppi[thisRowNumber].userPow_fromIntro / (totalKWHBill_partFromProd == 0 ? 1 : totalKWHBill_partFromProd);
+  
+  KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[thisRowNumber] = kappo;
 }
 
 function getOrSaveMeasClusterOnClusters(measurementClustersReadings,meterContainer){
@@ -356,7 +334,7 @@ function resultsDenullifier(theResults) {
               const mitbill = billedMeterReadData.meter;
               //TODO check if this is the correct place for this function
               //this function calculate the offset and the kappa
-              calculateKappa(mitbill, timeStep, theEdgeForThisMeas);
+              calculateKappa(mitbill, timeStep, theEdgeForThisMeas.KWHTotals);
               const valuesSource = 
                   billedMeterReadData.meter.inOffsetFlag
                      && 
