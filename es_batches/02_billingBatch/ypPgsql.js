@@ -11,6 +11,8 @@ const ypMeters = require("./ypMeters.js");
 
 const ypPgQueries = require("./ypPgQueries.js");
 const ypInflxQueries = require("./ypInflxQueries.js");
+
+
 //
 // ================================================================================================================================================================
 //
@@ -85,6 +87,7 @@ function appendInfluxMeterQueryFields(theEdgeForThisMeas, theMeter){
 
 
 }
+
 //
 // build hyperInfluxQuery !!!
 function hyperInfluxQuery(theEdgeForThisMeas) {
@@ -159,7 +162,7 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
     //
     // each mesurement set will concurr in defining the billing measure for a given billing meter
     if (theMeters.rows.length > 0) {
-      console.log(`there are ${theMeters.rows.length} meters to read for this read task...`);
+      //console.log(`there are ${theMeters.rows.length} meters to read for this read task...`);
       const measurementClusters = {};
 
       measurementClusters.measureDateStart = measureDateStart;
@@ -183,7 +186,7 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
       for (var key in  measurementClusters.readings) {
         zzz++;
         theEdgeForThisMeas =  measurementClusters.readings[key];
-        console.log(`building data queries for edge ${theEdgeForThisMeas.idEdge}`)
+        //console.log(`building data queries for edge ${theEdgeForThisMeas.idEdge}`)
         hyperInfluxQuery(theEdgeForThisMeas);
         // console.log(theEdge);
         // console.log(theEdge.fullInfluxQueryFields);

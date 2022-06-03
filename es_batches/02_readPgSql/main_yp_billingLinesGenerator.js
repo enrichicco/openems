@@ -12,8 +12,8 @@ const ypMeters = require("./ypMeters.js");
 const ypPgQueries = require("./ypPgQueries.js");
 const ypInflxQueries = require("./ypInflxQueries.js");
 
-
-const enableOffsetMode = true;
+//Was unsued so we remove for the batchConf in the query
+//const enableOffsetMode = true;
 
 //
 // ================================================================================================================================================================
@@ -28,13 +28,13 @@ const enableOffsetMode = true;
 //
 
 //
-//TODO find another spot to shift
+//
 // function to calculate kappa in the offset meter
 function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
   const KWHTotals = theEdgeForThisMeas.KWHTotals;
+  let kkk = 0;
 
   for(kkk = timeStep; kkk < mitbill.steppi.length; kkk+=timeStep){
-
     const kappo = {
       "userPow_introTotal": 0,
       "userPow_fromIntro": 0,
@@ -61,6 +61,37 @@ function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
     kappo.userPow_fromProd = mitbill.steppi[kkk].userPow_fromIntro / (totalKWHBill_partFromProd == 0 ? 1 : totalKWHBill_partFromProd);
     
     KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[kkk] = kappo;
+  }
+  //
+  //The step under is done to ensure the last entry in the array is confronted to the last entry of the cycle
+  if(kkk-timeStep != (mitbill.steppi.length - 1) && mitbill.steppi.length != 0){
+    const kappo = {
+      "userPow_introTotal": 0,
+      "userPow_fromIntro": 0,
+      "userPow_fromProd": 0
+    };
+
+
+    //
+    // eval intro
+    const mainIntro_cons = KWHTotals.introArray[mitbill.steppi.length - 1].consumption - KWHTotals.introArray[kkk - timeStep].consumption;
+    const mainIntro_prod = KWHTotals.introArray[mitbill.steppi.length - 1].production - KWHTotals.introArray[kkk - timeStep].production;
+    //
+    // eval prod
+    const mainProd_prod = KWHTotals.prodArray[mitbill.steppi.length - 1].production - KWHTotals.prodArray[kkk - timeStep].production;
+    const mainprod_prod4users = mainProd_prod - mainIntro_prod;
+
+    //
+    // eval meter under offset ....
+    const totalKWHBill_intro = mainIntro_cons + mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_allParts[mitbill.steppi.length - 1];
+    const totalKWHBill_partFromIntro = mainIntro_cons - KWHTotals.offsetMeter.totalBillingOffset_intro[mitbill.steppi.length - 1];
+    const totalKWHBill_partFromProd = mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_prod[mitbill.steppi.length - 1];
+
+    kappo.userPow_introTotal = mitbill.steppi[mitbill.steppi.length - 1].thisStepBill_intro / (totalKWHBill_intro == 0 ? 1 : totalKWHBill_intro); 
+    kappo.userPow_fromIntro = mitbill.steppi[mitbill.steppi.length - 1].userPow_fromProd / (totalKWHBill_partFromIntro == 0 ? 1 : totalKWHBill_partFromIntro); 
+    kappo.userPow_fromProd = mitbill.steppi[mitbill.steppi.length - 1].userPow_fromIntro / (totalKWHBill_partFromProd == 0 ? 1 : totalKWHBill_partFromProd);
+    
+    KWHTotals.billingTotals["meter_" + mitbill.meterid].valuesInOffset.kappa[mitbill.steppi.length - 1] = kappo;
   }
 }
 
@@ -128,7 +159,10 @@ function appendInfluxMeterQueryFields(theEdgeForThisMeas, theMeter){
 // build hyperInfluxQuery !!!
 function hyperInfluxQuery(theEdgeForThisMeas) {
   theEdgeForThisMeas.fullInfluxQueryFields = "";
-  theEdgeForThisMeas.fullInfluxFieldsMetadata = {};
+  //
+  // generate fields metadata infos container with basic (time field) data type
+  theEdgeForThisMeas.fullInfluxFieldsMetadata = inflxLib.generateInfluxFieldsDescriptorForTime();
+
   if(!!theEdgeForThisMeas.introductionMeter) {
     theEdgeForThisMeas.introductionMeter.influxDataSetFieldsNames = ypInflxQueries.generateInfluxDbQueryMeterSection(theEdgeForThisMeas.introductionMeter.MeterOnEdge);
     appendInfluxMeterQueryFields(theEdgeForThisMeas, theEdgeForThisMeas.introductionMeter);
@@ -152,7 +186,43 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
     }
   } 
 }
- 
+//
+//
+function findFirstGood(result) {
+  for(let ggg in result) {
+    let thisIsGood = true;
+    for (let ttt in result[ggg]){
+      if (result[ggg][ttt] === null) {
+        thisIsGood = false; 
+        continue;
+      }
+    }
+    if (thisIsGood) {
+      return ggg;
+    }
+  }
+  return -1;
+}
+function RectifyRow(theRow, theSampleRow) {
+  for(let tskey in theRow) {
+    if(theRow[tskey] === null) {
+      theRow[tskey] = theSampleRow[tskey];
+    }
+  }
+
+}
+//
+//
+function resultsDenullifier(theResults) {
+  const minIndex = findFirstGood(theResults);
+  if (minIndex > 0) {
+    RectifyRow(theResults[0], theResults[minIndex]);
+  }
+  for (yyy=1; yyy< theResults.length; yyy++){
+    RectifyRow(theResults[yyy],theResults[yyy-1])
+  }
+
+}
 
 
 //
@@ -171,12 +241,18 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
   const clientResult = await pgLib.clientDemo();
   console.log("PG Time with client: " + clientResult.rows[0]["now"]);
 
+  /* ================================================================= */
+  /* ======================TIME STEP IS HERE========================== */
+  /* ================================================================= */
 
   //
-  //this constant is number of mesurement intervals. 
-  // 2022.05.25 - bonde : this number times 5s - 
-  const timeStep = 180;
-  //3
+  //Take timeStep from batchConf.json file
+  const batchConfig = require('./batchConf.json');
+  const timeStep = batchConfig.timeStep;
+
+  //this const is the MeasInterval - at this time is t=5s. so timeStep * 5 = MeasInterval from batchConf.json file
+  const measInterval= timeStep * batchConfig.measInterval;
+  //
   //
   // first of all, load read tasks list
   const readTasks = await pgLib.client(ypPgQueries.generateReadTasksQuery());
@@ -238,17 +314,22 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
       for (var key in  measurementClusters.readings) {
         zzz++;
         theEdgeForThisMeas =  measurementClusters.readings[key];
-        console.log(`building data queries for edge ${theEdgeForThisMeas.idEdge}`)
+        console.log(`building data queries for edge ${theEdgeForThisMeas.idEdge}`);
         hyperInfluxQuery(theEdgeForThisMeas);
         // console.log(theEdge);
         // console.log(theEdge.fullInfluxQueryFields);
         theEdgeForThisMeas.fullInfluxQuery = ypInflxQueries.generateGivenMetersInfluxDbQuery(theEdgeForThisMeas.fullInfluxQueryFields,measureDateStart,measureDateEnd);
-        console.log("Query will be:");
-        console.log(theEdgeForThisMeas.fullInfluxQuery);
+        //console.log("Query will be:");
+        //console.log(theEdgeForThisMeas.fullInfluxQuery);
         const influxConn = inflxLib.startInfluxConnection(theEdgeForThisMeas.influxDb,theEdgeForThisMeas.fullInfluxFieldsMetadata);
         try {
           theEdgeForThisMeas.influxDataPromiseResult = await influxConn.query(theEdgeForThisMeas.fullInfluxQuery);
           const result = theEdgeForThisMeas.influxDataPromiseResult;
+          resultsDenullifier(result);
+          //
+          // spy function on node console for nulls 
+          // for(let ggg in result) {for (let ttt in result[ggg]){ if (result[ggg][ttt] === null) {console.log("ahi", ggg, result[ggg]); break;}}}
+          //
           if (!result || (result.length < 1)) {
               console.log(`no data on DB ${theEdgeForThisMeas.influxDb} --- Edge ${theEdgeForThisMeas.idEdge}-${theEdgeForThisMeas.edgeDesc} in dates interval ${measureDateStart} to ${measureDateEnd}`);
           } else {
@@ -264,7 +345,7 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
               billingTotals: {}
             };
             ypMeters.buildTotals(theEdgeForThisMeas, result, timeStep);
-            console.log(`\n\n\n ${theEdgeForThisMeas.influxDb} totals: `, theEdgeForThisMeas.KWHTotals);
+            //console.log(`\n\n\n ${theEdgeForThisMeas.influxDb} totals: `, theEdgeForThisMeas.KWHTotals);
             console.log("Going to insert data in the DB");
             let ciccabc = await pgLib.client(
               'CALL "youpower-billingmeters"."helloWorld"($1)',
@@ -273,12 +354,13 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
             for (var keyyy in theEdgeForThisMeas.KWHTotals.billingTotals){
               const billedMeterReadData = theEdgeForThisMeas.KWHTotals.billingTotals[keyyy];
               const mitbill = billedMeterReadData.meter;
-              //TODO find another spot for this function
+              //TODO check if this is the correct place for this function
+              //this function calculate the offset and the kappa
               calculateKappa(mitbill, timeStep, theEdgeForThisMeas);
               const valuesSource = 
                   billedMeterReadData.meter.inOffsetFlag
                      && 
-                     enableOffsetMode
+                     batchConfig.enableOffsetMode
                       ?
                         billedMeterReadData.valuesInOffset
                             :
@@ -309,12 +391,13 @@ function hyperInfluxQuery(theEdgeForThisMeas) {
   
                   valuesSource.totalKWHBill_intro,
                   valuesSource.totalKWHBill_partFromProd, 
-                  valuesSource.totalKWHBill_partFromIntro
+                  valuesSource.totalKWHBill_partFromIntro,
+                  measInterval
                 ];
               
-              console.log(parametersQuery);
+              //console.log(parametersQuery);
               ciccabc = await pgLib.client(
-                'CALL "youpower-billingmeters"."saveLectureFromMeter"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)',
+                'CALL "youpower-billingmeters"."saveLectureFromMeter"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)',
                 parametersQuery
               );
 
