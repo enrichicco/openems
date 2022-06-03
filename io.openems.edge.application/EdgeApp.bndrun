@@ -155,7 +155,8 @@
 	bnd.identity;id='io.openems.edge.timeofusetariff.corrently',\
 	bnd.identity;id='io.openems.edge.timeofusetariff.tibber',\
 	bnd.identity;id='io.openems.edge.meter.simulated';version=latest,\
-	bnd.identity;id='io.openems.edge.meter.algo2'
+	bnd.identity;id='io.openems.edge.meter.algo2',\
+	bnd.identity;id='io.openems.edge.meter.chint';version=latest
 -runbundles: \
 	Java-WebSocket;version='[1.5.3,1.5.4)',\
 	com.fazecast.jSerialComm;version='[2.5.1,2.5.2)',\
@@ -346,5 +347,7 @@
 	org.reactivestreams.reactive-streams;version='[1.0.3,1.0.4)',\
 	rrd4j;version='[3.8.1,3.8.2)',\
 	io.openems.edge.meter.simulated;version=snapshot,\
-	io.openems.edge.meter.algo2;version=snapshot
--resolve: manual
+	io.openems.edge.meter.algo2;version=snapshot,\
+	io.openems.edge.meter.chint;version=snapshot
+	
+-resolve: auto
