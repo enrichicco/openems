@@ -30,23 +30,24 @@ const ypInflxQueries = require("./ypInflxQueries.js");
 //
 //
 // function to calculate kappa in the offset meter
-function calculateKappa(mitbill, timeStep, KWHTotals){
+function calculateKappa(mitbill, timeStep, theEdgeForThisMeas){
   let kkk = 0;
 
   for(kkk = timeStep; kkk < mitbill.steppi.length; kkk+=timeStep){
-    evalKappo(kkk, kkk-timeStep, mitbill, timeStep, KWHTotals);
+    evalKappo(kkk, kkk-timeStep, mitbill, theEdgeForThisMeas);
   }
 
   //
   //The step under is done to ensure the last entry in the array is confronted to the last entry of the cycle
   if(kkk-timeStep != (mitbill.steppi.length - 1) && mitbill.steppi.length != 0){
-    evalKappo(mitbill.steppi.length - 1, kkk - timeStep, mitbill, timeStep, KWHTotals);
+    evalKappo(mitbill.steppi.length - 1, kkk - timeStep, mitbill, theEdgeForThisMeas);
   }
 }
 
 //
 //evaluate kappo
-function evalKappo(thisRowNumber, prevRowNumber, mitbill, KWHTotals){
+function evalKappo(thisRowNumber, prevRowNumber, mitbill, theEdgeForThisMeas){
+  const KWHTotals= theEdgeForThisMeas.KWHTotals;
   const kappo = {
     "userPow_introTotal": 0,
     "userPow_fromIntro": 0,
@@ -334,7 +335,7 @@ function resultsDenullifier(theResults) {
               const mitbill = billedMeterReadData.meter;
               //TODO check if this is the correct place for this function
               //this function calculate the offset and the kappa
-              calculateKappa(mitbill, timeStep, theEdgeForThisMeas.KWHTotals);
+              calculateKappa(mitbill, timeStep, theEdgeForThisMeas);
               const valuesSource = 
                   billedMeterReadData.meter.inOffsetFlag
                      && 
