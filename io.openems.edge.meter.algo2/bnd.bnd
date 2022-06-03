@@ -1,4 +1,5 @@
 Bundle-Name: OpenEMS Edge io.openems.edge.meter.algo2
+Bundle-Description: This implementation covers Algo2 UEM80-4DS E meters 
 Bundle-Vendor: YouPower sas
 Bundle-License: https://opensource.org/licenses/EPL-2.0
 Bundle-Version: 1.0.0.${tstamp}
