@@ -428,29 +428,34 @@ function calculateMeterInOffSet(meterInOffset, KWHTotals, timeStep){
   KWHTotals.billingTotals[keyToMeter].valuesInOffset = valuesInOffset;
 
 
-
-  for (let xxx = timeStep; xxx < KWHTotals.introArray.length; xxx += timeStep) {
-    //
-    // eval intro
-    const mainIntro_cons = KWHTotals.introArray[xxx].consumption - KWHTotals.introArray[xxx - timeStep].consumption;
-    const mainIntro_prod = KWHTotals.introArray[xxx].production - KWHTotals.introArray[xxx - timeStep].production;
-    //
-    // eval prod
-    const mainProd_prod = KWHTotals.prodArray[xxx].production - KWHTotals.prodArray[xxx - timeStep].production;
-    const mainprod_prod4users = mainProd_prod - mainIntro_prod;
-
-    //
-    // eval meter under offset ....
-    valuesInOffset.totalKWHBill_intro += mainIntro_cons + mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_allParts[xxx];
-    valuesInOffset.totalKWHBill_partFromIntro += mainIntro_cons - KWHTotals.offsetMeter.totalBillingOffset_intro[xxx];
-    valuesInOffset.totalKWHBill_partFromProd += mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_prod[xxx];
-    
-
+  let xxx =0;
+  for ( xxx= timeStep; xxx < KWHTotals.offsetMeter.totalBillingOffset_allParts.length; xxx += timeStep) {
+    evalOffsetEvent(xxx, xxx - timeStep, KWHTotals, valuesInOffset);
+  } 
+  if (xxx - timeStep !==  KWHTotals.offsetMeter.totalBillingOffset_allParts.length - 1){
+    evalOffsetEvent(KWHTotals.offsetMeter.totalBillingOffset_allParts.length - 1, xxx - timeStep, KWHTotals, valuesInOffset);
   }
   console.log("meter in offset was computed");
 
 }
 
+function evalOffsetEvent(thisRowNumber, lastRowNumber, KWHTotals, valuesInOffset){
+    //
+    // eval intro
+    const mainIntro_cons = KWHTotals.introArray[thisRowNumber].consumption - KWHTotals.introArray[lastRowNumber].consumption;
+    const mainIntro_prod = KWHTotals.introArray[thisRowNumber].production - KWHTotals.introArray[lastRowNumber].production;
+    //
+    // eval prod
+    const mainProd_prod = KWHTotals.prodArray[thisRowNumber].production - KWHTotals.prodArray[lastRowNumber].production;
+    const mainprod_prod4users = mainProd_prod - mainIntro_prod;
+
+    //
+    // eval meter under offset ....
+    valuesInOffset.totalKWHBill_intro += mainIntro_cons + mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_allParts[thisRowNumber];
+    valuesInOffset.totalKWHBill_partFromIntro += mainIntro_cons - KWHTotals.offsetMeter.totalBillingOffset_intro[thisRowNumber];
+    valuesInOffset.totalKWHBill_partFromProd += mainprod_prod4users - KWHTotals.offsetMeter.totalBillingOffset_prod[thisRowNumber];
+
+}
 
 //
 //
