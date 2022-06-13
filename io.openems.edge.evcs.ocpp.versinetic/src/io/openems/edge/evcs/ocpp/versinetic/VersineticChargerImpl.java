@@ -42,26 +42,26 @@ import io.openems.edge.evcs.ocpp.common.OcppStandardRequests;
 @Component(//
 		name = "Evcs.Ocpp.Versinetic", //
 		immediate = true, //
-		configurationPolicy = ConfigurationPolicy.REQUIRE, //
-		property = { //
-				EventConstants.EVENT_TOPIC + "=" + EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE //
-		} //
+		configurationPolicy = ConfigurationPolicy.REQUIRE //
+		
 )
-//
-//
-//
-public class VersineticChargerImpl extends AbstractOcppEvcsComponent implements /*VersineticCharger,*/ Evcs, MeasuringEvcs, ManagedEvcs, OpenemsComponent, EventHandler {
+@EventTopics({ //
+		EdgeEventConstants.TOPIC_CYCLE_EXECUTE_WRITE, //
+		EdgeEventConstants.TOPIC_CYCLE_AFTER_PROCESS_IMAGE //
+})
+public class VersineticChargerImpl extends AbstractOcppEvcsComponent 
+		implements Evcs, MeasuringEvcs, ManagedEvcs, OpenemsComponent, EventHandler {
 
 	// Default value for the hardware limit
 	private static final Integer DEFAULT_HARDWARE_LIMIT = 22080;
 
-	// Profiles that a ABL is supporting
+	// Profiles that a Versinetic is supporting
 	private static final OcppProfileType[] PROFILE_TYPES = { //
 			OcppProfileType.CORE //
 	};
 
 	/*
-	 * Values that a ABL is supporting Info: It is not sure that the ABL is using
+	 * Values that a Versinetic is supporting Info: It is not sure that the Versinetic is using
 	 * all of them, but in particular it is not supporting the information of the
 	 * current power.
 	 */
@@ -127,15 +127,15 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent implements 
 
 	@Override
 	public void handleEvent(Event event) {
-		if (!this.isEnabled()) {
+		/* if (!this.isEnabled()) {
 			return;
-		}
+		} */
 		super.handleEvent(event);
-		switch (event.getTopic()) {
+		/* switch (event.getTopic()) {
 		  case EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE:
 			 // TODO: fill channels
 			 break;
-		}
+		} */
 	}
 
 	@Override
@@ -206,8 +206,6 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent implements 
 	protected void deactivate() {
 		super.deactivate();
 	}
-
-
 
 	public String debugLog() {
 		return "Hello World";

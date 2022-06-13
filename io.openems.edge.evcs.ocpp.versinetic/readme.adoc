@@ -1,3 +1,13 @@
-= io.openems.edge.evcs.ocpp.versinetic
+= Versinetic EV Charging Station Development Kit
+
+This component implements the Versinetic Versinetic EV Charging Station Development Kit charging station, which is controlled and read out using the OCPP protocol.
+It provides specific information for the AbstractOcppEvcsComponent.
+
+Implemented Natures:
+* Evcs (Electric Vehicle Charging Station)
+* MeasuringEvcs
+
+Extended abstract class:
+* AbstractOcppEvcsComponent
 
 https://github.com/OpenEMS/openems/tree/develop/io.openems.edge.evcs.ocpp.versinetic[Source Code icon:github[]]

@@ -105,7 +105,6 @@
 	bnd.identity;id='io.openems.edge.evcs.goe.chargerhome',\
 	bnd.identity;id='io.openems.edge.evcs.hardybarth',\
 	bnd.identity;id='io.openems.edge.evcs.keba.kecontact',\
-	bnd.identity;id='io.openems.edge.evcs.ocpp.abl',\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.common',\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.ies.keywatt.singleccs',\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.server',\
@@ -159,6 +158,7 @@
 	bnd.identity;id='io.openems.edge.meter.algo2',\
 	bnd.identity;id='io.openems.edge.meter.chint';version=latest,\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.versinetic'
+
 -runbundles: \
 	Java-WebSocket;version='[1.5.3,1.5.4)',\
 	com.fazecast.jSerialComm;version='[2.5.1,2.5.2)',\
@@ -253,7 +253,6 @@
 	io.openems.edge.evcs.goe.chargerhome;version=snapshot,\
 	io.openems.edge.evcs.hardybarth;version=snapshot,\
 	io.openems.edge.evcs.keba.kecontact;version=snapshot,\
-	io.openems.edge.evcs.ocpp.abl;version=snapshot,\
 	io.openems.edge.evcs.ocpp.common;version=snapshot,\
 	io.openems.edge.evcs.ocpp.ies.keywatt.singleccs;version=snapshot,\
 	io.openems.edge.evcs.ocpp.server;version=snapshot,\
@@ -360,8 +359,6 @@
 	io.openems.edge.meter.algo2;version=snapshot,\
 	io.openems.edge.meter.chint;version=snapshot,\
 	io.openems.edge.evcs.ocpp.versinetic;version=snapshot
-	
-	
 	
 	
 -resolve: manual

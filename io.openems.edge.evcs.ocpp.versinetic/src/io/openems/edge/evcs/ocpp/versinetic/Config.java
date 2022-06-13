@@ -5,7 +5,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition(//
 		name = "EVCS OCPP Versinetic", //
-		description = "YP versinetic charge column driver")
+		description = "Implements an OCPP capable Versinetic electric vehicle charging station without the smart charging function")
 @interface Config {
 
 	@AttributeDefinition(name = "Component-ID", description = "Unique ID of this Component")
@@ -23,10 +23,10 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "OCPP connector identifier", description = "The connector id of the chargepoint (e.g. if there are two connectors, then the evcs has two id's 1 and 2).", required = true)
 	int connectorId() default 0;
 
-	@AttributeDefinition(name = "ABL logical identifier", description = "The logical id defined in the web administration interface of the ABL chargepoint.", required = true)
+	@AttributeDefinition(name = "Versinetic logical identifier", description = "The logical id defined in the web administration interface of the Versinetic chargepoint.", required = true)
 	String logicalId() default "evse100";
 
-	@AttributeDefinition(name = "ABL limit identifier", description = "The limit id defined in the web administration interface of the ABL chargepoint.", required = true)
+	@AttributeDefinition(name = "Versinetic limit identifier", description = "The limit id defined in the web administration interface of the Versinetic chargepoint.", required = true)
 	String limitId() default "limit100";
 
 	@AttributeDefinition(name = "Maximum current", description = "Maximum current of the charger in mA.", required = true)
