@@ -131,11 +131,14 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			return;
 		} */
 		super.handleEvent(event);
-		/* switch (event.getTopic()) {
+		switch (event.getTopic()) {
 		  case EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE:
-			 // TODO: fill channels
+			 // TODO: fill channels (dalla libreria originale)
 			 break;
-		} */
+		  case EdgeEventConstants.TOPIC_CYCLE_AFTER_PROCESS_IMAGE:
+			// TODO: (non considerato dalla libreria originale, va fatto qualcosa?)
+			break;
+		}
 	}
 
 	@Override
