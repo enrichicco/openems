@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding/<project>=UTF-8
+
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=11
 org.eclipse.jdt.core.compiler.codegen.unusedLocal=preserve
