@@ -1,5 +1,6 @@
 package io.openems.edge.evcs.ocpp.versinetic;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,6 +18,9 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.osgi.service.event.propertytypes.EventTopics;
 import org.osgi.service.metatype.annotations.Designate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import io.openems.edge.common.channel.Doc;
 import eu.chargetime.ocpp.model.Request;
@@ -33,10 +37,16 @@ import io.openems.edge.evcs.api.Evcs;
 import io.openems.edge.evcs.api.EvcsPower;
 import io.openems.edge.evcs.api.ManagedEvcs;
 import io.openems.edge.evcs.api.MeasuringEvcs;
+
+import io.openems.edge.evcs.ocpp.versinetic.VersineticChannelId;
 import io.openems.edge.evcs.ocpp.common.AbstractOcppEvcsComponent;
+import io.openems.edge.evcs.ocpp.common.ChargingProperty;
 import io.openems.edge.evcs.ocpp.common.OcppInformations;
 import io.openems.edge.evcs.ocpp.common.OcppProfileType;
 import io.openems.edge.evcs.ocpp.common.OcppStandardRequests;
+
+import io.openems.edge.common.channel.Channel;
+import io.openems.edge.common.channel.WriteChannel;
 
 @Designate(ocd = Config.class, factory = true)
 @Component(//
@@ -52,6 +62,8 @@ import io.openems.edge.evcs.ocpp.common.OcppStandardRequests;
 public class VersineticChargerImpl extends AbstractOcppEvcsComponent 
 		implements Evcs, MeasuringEvcs, ManagedEvcs, OpenemsComponent, EventHandler {
 
+	private final Logger log = LoggerFactory.getLogger(VersineticChargerImpl.class);
+	
 	// Default value for the hardware limit
 	private static final Integer DEFAULT_HARDWARE_LIMIT = 22080;
 
@@ -70,7 +82,7 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 					OcppInformations.values()) //
 	);
 
-	private Config config = null;
+	private Config config;
 
 	@Reference
 	private EvcsPower evcsPower;
@@ -85,7 +97,9 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 				OpenemsComponent.ChannelId.values(), //
 				Evcs.ChannelId.values(), //
 				AbstractOcppEvcsComponent.ChannelId.values(), //
-				ManagedEvcs.ChannelId.values(), MeasuringEvcs.ChannelId.values() //
+				ManagedEvcs.ChannelId.values(), // 
+				MeasuringEvcs.ChannelId.values(), //
+				VersineticChannelId.values() //
 		);
 	}
 
@@ -127,17 +141,34 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 
 	@Override
 	public void handleEvent(Event event) {
-		/* if (!this.isEnabled()) {
+		if (!this.isEnabled()) {
 			return;
-		} */
+		}
 		super.handleEvent(event);
 		switch (event.getTopic()) {
 		  case EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE:
 			 // TODO: fill channels (dalla libreria originale)
+			  
+			 VersineticChargerImpl.this.log
+			 	.info("Event: TOPIC_CYCLE_BEFORE_PROCESS_IMAGE");
+			  
+			 this.channel(VersineticChannelId.ALIAS).setNextValue(config.alias());
+			 
+			 VersineticChargerImpl.this.log
+			 	.info("Channel / ALIAS:" + this.channel(VersineticChannelId.ALIAS).value().asString());
+			  
 			 break;
+		  
 		  case EdgeEventConstants.TOPIC_CYCLE_AFTER_PROCESS_IMAGE:
 			// TODO: (non considerato dalla libreria originale, va fatto qualcosa?)
+			  
+			VersineticChargerImpl.this.log
+				.info("Event: TOPIC_CYCLE_AFTER_PROCESS_IMAGE");
+			
 			break;
+			
+		  default:
+		  	break;
 		}
 	}
 
