@@ -11,7 +11,7 @@ import io.openems.edge.sma.enums.ActiveBatteryChargingMode;
 import io.openems.edge.sma.enums.AutomaticFrequencySynchronization;
 import io.openems.edge.sma.enums.AutomaticGeneratorStart;
 import io.openems.edge.sma.enums.BatteryType;
-import io.openems.edge.sma.enums.BmsOperatingMode;
+import io.openems.edge.sma.enums.BMSOperatingMode;
 import io.openems.edge.sma.enums.ConfigurationOfTheCosphiEndPoint;
 import io.openems.edge.sma.enums.ConfigurationOfTheCosphiStartingPoint;
 import io.openems.edge.sma.enums.ControlOfBatteryChargingViaCommunicationAvailable;
@@ -44,7 +44,7 @@ import io.openems.edge.sma.enums.StatusOfUtilityGrid;
 import io.openems.edge.sma.enums.SystemState;
 import io.openems.edge.sma.enums.TimeControlledGeneratorOperation;
 import io.openems.edge.sma.enums.TimeControlledInverterOperation;
-import io.openems.edge.sma.enums.TypeOfAcSubdistribution;
+import io.openems.edge.sma.enums.TypeOfACSubdistribution;
 
 public enum SiChannelId implements ChannelId {
 	// EnumReadChannels
@@ -65,7 +65,7 @@ public enum SiChannelId implements ChannelId {
 			Doc.of(ControlOfBatteryChargingViaCommunicationAvailable.values())), //
 	STATUS_DIGITAL_INPUT(Doc.of(StatusDigitalInput.values())), //
 	BATTERY_TYPE(Doc.of(BatteryType.values())), //
-	TYPE_OF_AC_SUBDISTRIBUTION(Doc.of(TypeOfAcSubdistribution.values())), //
+	TYPE_OF_AC_SUBDISTRIBUTION(Doc.of(TypeOfACSubdistribution.values())), //
 	OPERATING_MODE_FOR_ACTIVE_POWER_LIMITATION(Doc.of(OperatingModeForActivePowerLimitation.values())), //
 
 	// EnumWriteChannsl
@@ -78,7 +78,7 @@ public enum SiChannelId implements ChannelId {
 			Doc.of(OperatingModeOfActivePowerLimitationAtOverFrequency.values())), //
 	CONFIGURATION_OF_THE_COSPHI_STARTING_POINT(Doc.of(ConfigurationOfTheCosphiStartingPoint.values())), //
 	CONFIGURATION_OF_THE_COSPHI_END_POINT(Doc.of(ConfigurationOfTheCosphiEndPoint.values())), //
-	BMS_OPERATING_MODE(Doc.of(BmsOperatingMode.values())), //
+	BMS_OPERATING_MODE(Doc.of(BMSOperatingMode.values())), //
 	GRID_REQUEST_VIA_POWER_SWITCH_ON(Doc.of(GridRequestViPowerSwitchOn.values())), //
 	MANUAL_CONTROL_OF_NETWORK_CONNECTION(Doc.of(ManualControlOfNetworkConnection.values())), //
 	GRID_REQUEST_VIA_CHARGE_TYPE(Doc.of(GridRequestViaChargeType.values())), //
