@@ -39,6 +39,7 @@ import io.openems.edge.evcs.api.ManagedEvcs;
 import io.openems.edge.evcs.api.MeasuringEvcs;
 
 import io.openems.edge.evcs.ocpp.versinetic.VersineticChannelId;
+
 import io.openems.edge.evcs.ocpp.common.AbstractOcppEvcsComponent;
 import io.openems.edge.evcs.ocpp.common.ChargingProperty;
 import io.openems.edge.evcs.ocpp.common.OcppInformations;
@@ -47,6 +48,8 @@ import io.openems.edge.evcs.ocpp.common.OcppStandardRequests;
 
 import io.openems.edge.common.channel.Channel;
 import io.openems.edge.common.channel.WriteChannel;
+
+
 
 @Designate(ocd = Config.class, factory = true)
 @Component(//
@@ -168,12 +171,16 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			var oc_ocpp_id = getConfiguredOcppId();
 			var oc_status = evcs.getStatus();
 			
+			// CORE_METER_VALUES_POWER_REACTIVE_EXPORT
+			var oc_temperature = 0;
+			
 			var oc_measu = getSupportedMeasurements();
 			var oc_active_cons_energy = evcs.getActiveConsumptionEnergy();
 			var oc_energy_session = evcs.getEnergySession();
 			var oc_charge_power = evcs.getChargePower();
 			
 			var oc_state = evcs.getState();
+			
 			
 			
 			
@@ -193,6 +200,8 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			VersineticChargerImpl.this.log
 				.info("Ocpp.state: " + oc_state);
 			
+			VersineticChargerImpl.this.log
+				.info("Ocpp.temperature: " + oc_temperature);
 			
 			VersineticChargerImpl.this.log
 				.info("Supported measurement: " + oc_measu);
@@ -205,6 +214,7 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			
 			VersineticChargerImpl.this.log
 				.info("Charge power: " + oc_charge_power);
+			
 			
 			break;
 			
