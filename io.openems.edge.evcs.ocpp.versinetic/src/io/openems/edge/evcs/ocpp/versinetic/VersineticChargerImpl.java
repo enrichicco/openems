@@ -152,18 +152,59 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			 VersineticChargerImpl.this.log
 			 	.info("Event: TOPIC_CYCLE_BEFORE_PROCESS_IMAGE");
 			  
-			 this.channel(VersineticChannelId.ALIAS).setNextValue(config.alias());
+			 this.channel(VersineticChannelId.CP_ALIAS).setNextValue(config.alias());
 			 
 			 VersineticChargerImpl.this.log
-			 	.info("Channel / ALIAS:" + this.channel(VersineticChannelId.ALIAS).value().asString());
+			 	.info("Channel / ALIAS:" + this.channel(VersineticChannelId.CP_ALIAS).value().asString());
 			  
 			 break;
 		  
 		  case EdgeEventConstants.TOPIC_CYCLE_AFTER_PROCESS_IMAGE:
-			// TODO: (non considerato dalla libreria originale, va fatto qualcosa?)
+			// Ciclo standard, non previsto dalla libreria clonata
 			  
+			AbstractOcppEvcsComponent evcs = this;
+			
+			var oc_ocpp_session = evcs.getSessionId();
+			var oc_ocpp_id = getConfiguredOcppId();
+			var oc_status = evcs.getStatus();
+			
+			var oc_measu = getSupportedMeasurements();
+			var oc_active_cons_energy = evcs.getActiveConsumptionEnergy();
+			var oc_energy_session = evcs.getEnergySession();
+			var oc_charge_power = evcs.getChargePower();
+			
+			var oc_state = evcs.getState();
+			
+			
+			
+			
 			VersineticChargerImpl.this.log
 				.info("Event: TOPIC_CYCLE_AFTER_PROCESS_IMAGE");
+			
+			VersineticChargerImpl.this.log
+				.info("Ocpp.session: " + oc_ocpp_session);
+			
+			VersineticChargerImpl.this.log
+				.info("Ocpp.id: " + oc_ocpp_id);
+			
+			VersineticChargerImpl.this.log
+				.info("Ocpp.status: " + oc_status);
+			
+			VersineticChargerImpl.this.log
+				.info("Ocpp.state: " + oc_state);
+			
+			
+			VersineticChargerImpl.this.log
+				.info("Supported measurement: " + oc_measu);
+			
+			VersineticChargerImpl.this.log
+				.info("Active consumption energy: " + oc_active_cons_energy);
+			
+			VersineticChargerImpl.this.log
+				.info("Energy session: " + oc_energy_session);
+			
+			VersineticChargerImpl.this.log
+				.info("Charge power: " + oc_charge_power);
 			
 			break;
 			
