@@ -113,6 +113,7 @@ public abstract class AbstractOcppEvcsComponent extends AbstractOpenemsComponent
 
 		var timedata = this.getTimedata();
 		var componentId = this.id();
+		if (timedata != null)
 		timedata.getLatestValue(new ChannelAddress(componentId, "ActiveConstumptionEnergy"))
 				.thenAccept(totalEnergyOpt -> {
 
