@@ -248,7 +248,7 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 	public List<Request> getRequiredRequestsAfterConnection() {
 		List<Request> requests = new ArrayList<>();
 
-		var setMeterValueSampleInterval = new ChangeConfigurationRequest("MeterValueSampleInterval", "10");
+		var setMeterValueSampleInterval = new ChangeConfigurationRequest("MeterValueSampleInterval", "20");
 		requests.add(setMeterValueSampleInterval);
 
 		var setMeterValueSampledData = new ChangeConfigurationRequest("MeterValuesSampledData",
