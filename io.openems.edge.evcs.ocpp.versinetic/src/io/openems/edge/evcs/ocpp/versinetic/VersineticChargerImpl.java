@@ -23,9 +23,11 @@ import org.slf4j.LoggerFactory;
 
 
 import io.openems.edge.common.channel.Doc;
+import eu.chargetime.ocpp.Session;
 import eu.chargetime.ocpp.model.Request;
 import eu.chargetime.ocpp.model.core.ChangeConfigurationRequest;
 import eu.chargetime.ocpp.model.core.DataTransferRequest;
+import eu.chargetime.ocpp.model.core.MeterValuesRequest;
 import eu.chargetime.ocpp.model.remotetrigger.TriggerMessageRequest;
 import eu.chargetime.ocpp.model.remotetrigger.TriggerMessageRequestType;
 import io.openems.edge.common.component.ComponentManager;
@@ -152,14 +154,6 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 		  case EdgeEventConstants.TOPIC_CYCLE_BEFORE_PROCESS_IMAGE:
 			 // TODO: fill channels (dalla libreria originale)
 			  
-			 VersineticChargerImpl.this.log
-			 	.info("Event: TOPIC_CYCLE_BEFORE_PROCESS_IMAGE");
-			  
-			 this.channel(VersineticChannelId.CP_ALIAS).setNextValue(config.alias());
-			 
-			 VersineticChargerImpl.this.log
-			 	.info("Channel / ALIAS:" + this.channel(VersineticChannelId.CP_ALIAS).value().asString());
-			  
 			 break;
 		  
 		  case EdgeEventConstants.TOPIC_CYCLE_AFTER_PROCESS_IMAGE:
@@ -171,50 +165,31 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			var oc_ocpp_id = getConfiguredOcppId();
 			var oc_status = evcs.getStatus();
 			
-			// CORE_METER_VALUES_POWER_REACTIVE_EXPORT
-			var oc_temperature = 0;
+			this.channel(VersineticChannelId.CP_SESSION_ID).setNextValue(oc_ocpp_session);
+			this.channel(VersineticChannelId.CP_ID).setNextValue(oc_ocpp_id);
+			this.channel(VersineticChannelId.CP_STATUS).setNextValue(oc_status);
 			
+			// Energy.Active.Import.Register: 79389 Wh
+			
+			/* 
 			var oc_measu = getSupportedMeasurements();
 			var oc_active_cons_energy = evcs.getActiveConsumptionEnergy();
 			var oc_energy_session = evcs.getEnergySession();
 			var oc_charge_power = evcs.getChargePower();
-			
 			var oc_state = evcs.getState();
-			
-			
-			
-			
+			*/
 			
 			VersineticChargerImpl.this.log
 				.info("Event: TOPIC_CYCLE_AFTER_PROCESS_IMAGE");
 			
 			VersineticChargerImpl.this.log
-				.info("Ocpp.session: " + oc_ocpp_session);
+				.info("Channel CP_session: " + oc_ocpp_session);
 			
 			VersineticChargerImpl.this.log
-				.info("Ocpp.id: " + oc_ocpp_id);
+				.info("Channel CP_id: " + oc_ocpp_id);
 			
 			VersineticChargerImpl.this.log
-				.info("Ocpp.status: " + oc_status);
-			
-			VersineticChargerImpl.this.log
-				.info("Ocpp.state: " + oc_state);
-			
-			VersineticChargerImpl.this.log
-				.info("Ocpp.temperature: " + oc_temperature);
-			
-			VersineticChargerImpl.this.log
-				.info("Supported measurement: " + oc_measu);
-			
-			VersineticChargerImpl.this.log
-				.info("Active consumption energy: " + oc_active_cons_energy);
-			
-			VersineticChargerImpl.this.log
-				.info("Energy session: " + oc_energy_session);
-			
-			VersineticChargerImpl.this.log
-				.info("Charge power: " + oc_charge_power);
-			
+				.info("Channel CP_status: " + oc_status);
 			
 			break;
 			
@@ -293,6 +268,6 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 	}
 
 	public String debugLog() {
-		return "Hello World";
+		return "Hi, I'm a debug log row";
 	}
 }
