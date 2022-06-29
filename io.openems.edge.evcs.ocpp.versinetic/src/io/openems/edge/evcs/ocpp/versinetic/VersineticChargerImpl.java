@@ -164,10 +164,12 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			var oc_ocpp_session = evcs.getSessionId();
 			var oc_ocpp_id = getConfiguredOcppId();
 			var oc_status = evcs.getStatus();
+			var oc_energyActToEv = evcs.channel("EnergyActiveToEv"); //evcs.channels;
 			
 			this.channel(VersineticChannelId.CP_SESSION_ID).setNextValue(oc_ocpp_session);
 			this.channel(VersineticChannelId.CP_ID).setNextValue(oc_ocpp_id);
 			this.channel(VersineticChannelId.CP_STATUS).setNextValue(oc_status);
+			this.channel(VersineticChannelId.CP_METER_VALUE).setNextValue(oc_energyActToEv.value());
 			
 			// Energy.Active.Import.Register: 79389 Wh
 			
@@ -190,6 +192,9 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			
 			VersineticChargerImpl.this.log
 				.info("Channel CP_status: " + oc_status);
+
+			VersineticChargerImpl.this.log
+				.info("Channel EAtoEv : " + oc_energyActToEv.value());
 			
 			break;
 			

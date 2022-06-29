@@ -9,7 +9,8 @@ public enum VersineticChannelId implements io.openems.edge.common.channel.Channe
 	
 	CP_SESSION_ID(Doc.of(OpenemsType.STRING).text("Session-ID")),
 	CP_ID(Doc.of(OpenemsType.STRING).text("Chargepoint-ID")),
-	CP_METER_VALUE(Doc.of(OpenemsType.INTEGER).unit(Unit.WATT_HOURS).text("Meter value")),
+	// CP_METER_VALUE(Doc.of(OpenemsType.INTEGER).unit(Unit.WATT_HOURS).text("Meter value")),
+	CP_METER_VALUE(Doc.of(OpenemsType.STRING).text("Meter value")),
 	CP_STATUS(Doc.of(OpenemsType.STRING).text("Chargepoint status")),
 	CP_RFID_ID(Doc.of(OpenemsType.STRING).text("RFID-ID")),
 	
