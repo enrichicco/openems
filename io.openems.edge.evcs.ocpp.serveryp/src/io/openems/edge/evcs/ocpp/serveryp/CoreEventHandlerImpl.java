@@ -68,7 +68,8 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	public AuthorizeConfirmation handleAuthorizeRequest(UUID sessionIndex, AuthorizeRequest request) {
 
 		this.logDebug("Handle AuthorizeRequest: " + request);
-
+		this.logDebug("IdTaG: " + request.getIdTag());
+		
 		var tag = new IdTagInfo(AuthorizationStatus.Accepted);
 		tag.setParentIdTag(request.getIdTag());
 		return new AuthorizeConfirmation(tag);
@@ -326,6 +327,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			StartTransactionRequest request) {
 
 		this.logDebug("Handle StartTransactionRequest: " + request);
+		this.logDebug("IdTaG: " + request.getIdTag());
 
 		var idTagInfo = new IdTagInfo(AuthorizationStatus.Accepted);
 		idTagInfo.setParentIdTag(request.getIdTag());
@@ -337,6 +339,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	public StopTransactionConfirmation handleStopTransactionRequest(UUID sessionIndex, StopTransactionRequest request) {
 
 		this.logDebug("Handle StopTransactionRequest: " + request);
+		this.logDebug("IdTaG: " + request.getIdTag());
 
 		var tag = new IdTagInfo(AuthorizationStatus.Accepted);
 		tag.setParentIdTag(request.getIdTag());
