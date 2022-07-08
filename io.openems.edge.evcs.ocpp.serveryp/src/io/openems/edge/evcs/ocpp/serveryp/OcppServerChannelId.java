@@ -1,10 +1,10 @@
-package io.openems.edge.evcs.ocpp.versinetic;
+package io.openems.edge.evcs.ocpp.serveryp;
 
 import io.openems.common.channel.Level;
 import io.openems.common.types.OpenemsType;
 import io.openems.edge.common.channel.Doc;
 
-public enum VersineticChannelId implements io.openems.edge.common.channel.ChannelId {
+public enum OcppServerChannelId implements io.openems.edge.common.channel.ChannelId {
 	
 	YP_EVCS_ID(Doc.of(OpenemsType.STRING).text("EVCS-ID")),
 	YP_RFID_ID(Doc.of(OpenemsType.STRING).text("RFID-ID")),
@@ -15,7 +15,7 @@ public enum VersineticChannelId implements io.openems.edge.common.channel.Channe
 	
 	private final Doc doc;
 
-	private VersineticChannelId(Doc doc) {
+	private OcppServerChannelId(Doc doc) {
 		this.doc = doc;
 	}
 
@@ -23,4 +23,5 @@ public enum VersineticChannelId implements io.openems.edge.common.channel.Channe
 	public Doc doc() {
 		return this.doc;
 	}
+
 }

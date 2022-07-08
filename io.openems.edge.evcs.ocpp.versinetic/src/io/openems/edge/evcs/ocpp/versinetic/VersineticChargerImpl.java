@@ -175,39 +175,50 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 			case NOT_READY_FOR_CHARGING: // available
 				VersineticChargerImpl.this.log
 					.info("Charging station: " + oc_ocpp_id + " / Available");
+				
+				VersineticChargerImpl.this.log
+					.info("Channel CP_session: " + oc_ocpp_session);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_id: " + oc_ocpp_id);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_status: " + oc_status);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_meter_value: " + oc_energyActToEv.value());
 				break;
 				
 			case CHARGING:	// charging
 				VersineticChargerImpl.this.log
 					.info("Charging station: " + oc_ocpp_id + " / Charging");
-				
-				this.channel(VersineticChannelId.CP_SESSION_ID).setNextValue(oc_ocpp_session);
-				this.channel(VersineticChannelId.CP_ID).setNextValue(oc_ocpp_id);
-				this.channel(VersineticChannelId.CP_STATUS).setNextValue(oc_status);
-				this.channel(VersineticChannelId.CP_METER_VALUE).setNextValue(oc_energyActToEv.value());
-				
-				// todo: aggiungere meterStart
-				// todo: aggiungere RFID-ID
 				break;
 				
 			case CHARGING_FINISHED:
 				VersineticChargerImpl.this.log
 					.info("Charging station: " + oc_ocpp_id + " / Charging finishing");
 				
-				this.channel(VersineticChannelId.CP_SESSION_ID).setNextValue(oc_ocpp_session);
-				this.channel(VersineticChannelId.CP_ID).setNextValue(oc_ocpp_id);
-				this.channel(VersineticChannelId.CP_STATUS).setNextValue(oc_status);
-				this.channel(VersineticChannelId.CP_METER_VALUE).setNextValue(oc_energyActToEv.value());
-				
-				// todo: aggiungere meterStop
-				// todo: aggiungere RFID-ID
+				VersineticChargerImpl.this.log
+					.info("Channel CP_session: " + oc_ocpp_session);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_id: " + oc_ocpp_id);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_status: " + oc_status);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_meter_value: " + oc_energyActToEv.value());
+		
 				break;
 				
 			case READY_FOR_CHARGING: // preparing
 				VersineticChargerImpl.this.log
 					.info("Charging station: " + oc_ocpp_id + " / Pairing with EV and preparing");
 				
-				// todo: intercettare RFID-ID
+				VersineticChargerImpl.this.log
+					.info("Channel CP_session: " + oc_ocpp_session);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_id: " + oc_ocpp_id);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_status: " + oc_status);
+				VersineticChargerImpl.this.log
+					.info("Channel CP_meter_value: " + oc_energyActToEv.value());
+				
 				break;
 				
 			case CHARGING_REJECTED: // suspended by EVSE or EV
@@ -216,15 +227,6 @@ public class VersineticChargerImpl extends AbstractOcppEvcsComponent
 				break;
 				
 			}
-			
-			VersineticChargerImpl.this.log
-				.info("Channel CP_session: " + oc_ocpp_session);
-			VersineticChargerImpl.this.log
-				.info("Channel CP_id: " + oc_ocpp_id);
-			VersineticChargerImpl.this.log
-				.info("Channel CP_status: " + oc_status);
-			VersineticChargerImpl.this.log
-				.info("Channel CP_meter_value: " + oc_energyActToEv.value());
 			
 			break;
 			

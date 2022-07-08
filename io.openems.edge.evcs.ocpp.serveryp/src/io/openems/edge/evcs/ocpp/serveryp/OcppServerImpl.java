@@ -40,7 +40,7 @@ import io.openems.edge.evcs.ocpp.common.OcppServer;
 
 @Designate(ocd = Config.class, factory = true)
 @Component(//
-		name = "Evcs.Ocpp.Server", //
+		name = "Evcs.Ocpp.Serveryp", //
 		immediate = true, //
 		configurationPolicy = ConfigurationPolicy.REQUIRE //
 )

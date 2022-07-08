@@ -41,14 +41,18 @@ import io.openems.edge.evcs.ocpp.common.AbstractOcppEvcsComponent;
 import io.openems.edge.evcs.ocpp.common.ChargingProperty;
 import io.openems.edge.evcs.ocpp.common.OcppInformations;
 
-public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 
+public class CoreEventHandlerImpl implements ServerCoreEventHandler {
+	
 	private final Logger log = LoggerFactory.getLogger(CoreEventHandlerImpl.class);
 
 	private final OcppServerImpl parent;
 
 	public CoreEventHandlerImpl(OcppServerImpl parent) {
+		
 		this.parent = parent;
+		
+		
 	}
 
 	@Override
@@ -68,6 +72,8 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	public AuthorizeConfirmation handleAuthorizeRequest(UUID sessionIndex, AuthorizeRequest request) {
 
 		this.logDebug("Handle AuthorizeRequest: " + request);
+		
+		this.logDebug("[YP] RFID-ID: " + request.getIdTag());
 
 		var tag = new IdTagInfo(AuthorizationStatus.Accepted);
 		tag.setParentIdTag(request.getIdTag());
@@ -326,8 +332,31 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			StartTransactionRequest request) {
 
 		this.logDebug("Handle StartTransactionRequest: " + request);
+		
+		var authStatus = AuthorizationStatus.Accepted;
+		
+		if(authStatus == AuthorizationStatus.Accepted)
+		{
+			AbstractOcppEvcsComponent evcs;
+			var evcss = this.getEvcssBySessionIndex(sessionIndex);
+			if (evcss.size() == 1) {
+				evcs = evcss.get(0);
+			} else {
+				evcs = this.getEvcsBySessionIndexAndConnector(sessionIndex, request.getConnectorId());
+			}
+			
+			this.logDebug("[YP] RFID-ID: " + request.getIdTag());
+			this.logDebug("[YP] Meter Start: " + request.getMeterStart());
+			this.logDebug("[YP] Timestamp: " + request.getTimestamp());
+			this.logDebug("[YP] EVCS: " + evcs.getConfiguredOcppId());
+			
+			evcs.channel(OcppServerChannelId.YP_EVCS_ID).setNextValue(evcs.getConfiguredOcppId());
+			evcs.channel(OcppServerChannelId.YP_RFID_ID).setNextValue(request.getIdTag());
+			evcs.channel(OcppServerChannelId.YP_METER_START).setNextValue(request.getMeterStart());
+		
+		}
 
-		var idTagInfo = new IdTagInfo(AuthorizationStatus.Accepted);
+		var idTagInfo = new IdTagInfo(authStatus);
 		idTagInfo.setParentIdTag(request.getIdTag());
 
 		return new StartTransactionConfirmation(idTagInfo, request.getConnectorId());
@@ -337,8 +366,10 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	public StopTransactionConfirmation handleStopTransactionRequest(UUID sessionIndex, StopTransactionRequest request) {
 
 		this.logDebug("Handle StopTransactionRequest: " + request);
+		
+		var authStatus = AuthorizationStatus.Accepted;
 
-		var tag = new IdTagInfo(AuthorizationStatus.Accepted);
+		var tag = new IdTagInfo(authStatus);
 		tag.setParentIdTag(request.getIdTag());
 		tag.validate();
 		AbstractOcppEvcsComponent evcs;
@@ -349,7 +380,18 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			evcs = this.getEvcsBySessionIndexAndConnector(sessionIndex, request.getTransactionId());
 		}
 		evcs._setStatus(Status.CHARGING_FINISHED);
-
+		
+		// no if Accepted perché devo chiudere comunque la transazione anche se nel
+		// frattempo il tag è stato bloccato
+		this.logDebug("[YP] RFID-ID: " + request.getIdTag());
+		this.logDebug("[YP] Meter Stop: " + request.getMeterStop());
+		this.logDebug("[YP] Timestamp: " + request.getTimestamp());
+		this.logDebug("[YP] EVCS: " + evcs.getConfiguredOcppId());
+		
+		evcs.channel(OcppServerChannelId.YP_EVCS_ID).setNextValue(evcs.getConfiguredOcppId());
+		evcs.channel(OcppServerChannelId.YP_RFID_ID).setNextValue(request.getIdTag());
+		evcs.channel(OcppServerChannelId.YP_METER_STOP).setNextValue(request.getMeterStop());
+			
 		var response = new StopTransactionConfirmation();
 		response.setIdTagInfo(tag);
 		response.validate();
