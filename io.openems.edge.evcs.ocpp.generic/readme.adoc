@@ -1,0 +1,16 @@
+= Generic OCPP Station
+
+This component implements a generic charging station, which is controlled and read out using the OCPP protocol.
+It provides specific information for the AbstractOcppEvcsComponent.
+
+Implemented Natures:
+* Evcs (Electric Vehicle Charging Station)
+* MeasuringEvcs
+
+Extended abstract class:
+* AbstractOcppEvcsComponent
+
+OCPP supported
+* Version 1.6J
+
+https://github.com/OpenEMS/openems/tree/develop/io.openems.edge.evcs.ocpp.generic[Source Code icon:github[]]
