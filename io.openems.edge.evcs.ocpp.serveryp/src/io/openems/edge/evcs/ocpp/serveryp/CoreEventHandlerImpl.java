@@ -276,6 +276,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			evcs._setChargingstationCommunicationFailed(false);
 			evcsStatus = Status.NOT_READY_FOR_CHARGING;
 			break;
+			
 		case Charging:
 			evcsStatus = Status.CHARGING;
 

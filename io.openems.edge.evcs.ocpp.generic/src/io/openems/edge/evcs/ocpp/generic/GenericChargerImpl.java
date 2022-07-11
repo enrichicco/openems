@@ -203,6 +203,10 @@ public class GenericChargerImpl extends AbstractOcppEvcsComponent
 				
 			case STARTING: // TODO: test this state
 				this.logDebug(log, "EVCS: " + oc_ocpp_id + " / Charging is starting");
+				this.logDebug(log, "EVCS status: " + oc_status);
+				this.logDebug(log, "EVCS session: " + oc_ocpp_session);
+				this.logDebug(log, "EVCS meter value: " + oc_energyActToEv.value());
+				this.logDebug(log, "Channel GC_EVCS_ID: " + oc_ocpp_id);
 				break;
 				
 			case ENERGY_LIMIT_REACHED: // energy limit reached, test this state
