@@ -350,9 +350,9 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			this.logDebug("[YP] Timestamp: " + request.getTimestamp());
 			this.logDebug("[YP] EVCS: " + evcs.getConfiguredOcppId());
 			
-			evcs.channel(OcppServerChannelId.YP_EVCS_ID).setNextValue(evcs.getConfiguredOcppId());
-			evcs.channel(OcppServerChannelId.YP_RFID_ID).setNextValue(request.getIdTag());
-			evcs.channel(OcppServerChannelId.YP_METER_START).setNextValue(request.getMeterStart());
+			evcs.channel(OcppServerChannelId.GC_EVCS_ID).setNextValue(evcs.getConfiguredOcppId());
+			evcs.channel(OcppServerChannelId.GC_RFID_ID).setNextValue(request.getIdTag());
+			evcs.channel(OcppServerChannelId.GC_METER_START).setNextValue(request.getMeterStart());
 		
 		}
 
@@ -388,9 +388,9 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		this.logDebug("[YP] Timestamp: " + request.getTimestamp());
 		this.logDebug("[YP] EVCS: " + evcs.getConfiguredOcppId());
 		
-		evcs.channel(OcppServerChannelId.YP_EVCS_ID).setNextValue(evcs.getConfiguredOcppId());
-		evcs.channel(OcppServerChannelId.YP_RFID_ID).setNextValue(request.getIdTag());
-		evcs.channel(OcppServerChannelId.YP_METER_STOP).setNextValue(request.getMeterStop());
+		evcs.channel(OcppServerChannelId.GC_EVCS_ID).setNextValue(evcs.getConfiguredOcppId());
+		evcs.channel(OcppServerChannelId.GC_RFID_ID).setNextValue(request.getIdTag());
+		evcs.channel(OcppServerChannelId.GC_METER_STOP).setNextValue(request.getMeterStop());
 			
 		var response = new StopTransactionConfirmation();
 		response.setIdTagInfo(tag);
