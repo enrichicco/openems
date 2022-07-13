@@ -360,7 +360,8 @@
 	io.openems.edge.meter.algo2;version=snapshot,\
 	io.openems.edge.meter.chint;version=snapshot,\
 	io.openems.edge.evcs.ocpp.serveryp;version=snapshot,\
-	io.openems.edge.evcs.ocpp.generic;version=snapshot
+	io.openems.edge.evcs.ocpp.generic;version=snapshot,\
+	org.postgresql.jdbc;version='[42.3.5,42.3.6)'
 	
 	
 -resolve: manual

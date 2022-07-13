@@ -26,5 +26,5 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Port", description = "The port of to listen on.")
 	int port() default OcppServerImpl.DEFAULT_PORT;
 
-	String webconsole_configurationFactory_nameHint() default "EVCS OCPP Server [{id}]";
+	String webconsole_configurationFactory_nameHint() default "EVCS OCPP Server YP [{id}]";
 }
