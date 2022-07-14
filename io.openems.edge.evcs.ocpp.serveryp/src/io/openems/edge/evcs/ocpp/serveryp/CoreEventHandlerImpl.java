@@ -41,7 +41,8 @@ import io.openems.edge.evcs.ocpp.common.AbstractOcppEvcsComponent;
 import io.openems.edge.evcs.ocpp.common.ChargingProperty;
 import io.openems.edge.evcs.ocpp.common.OcppInformations;
 
-import java.sql.*;
+
+import io.openems.edge.evcs.ocpp.serveryp.DatabaseConnectionHandlerImpl;
 
 public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	
@@ -49,8 +50,11 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 
 	private final OcppServerImpl parent;
 
+	protected DatabaseConnectionHandlerImpl dbapi;
+
 	public CoreEventHandlerImpl(OcppServerImpl parent) {
-		
+		this.dbapi = new DatabaseConnectionHandlerImpl(parent);
+		parent.dbapi = this.dbapi;
 		this.parent = parent;
 	}
 
@@ -74,7 +78,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		this.logDebug("[YP] RFID-ID: " + request.getIdTag());
 		
 		// var authStatus = AuthorizationStatus.Accepted;
-		var authStatus = this.CheckIdTag(request.getIdTag());
+		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 
 		var tag = new IdTagInfo(authStatus);
 		tag.setParentIdTag(request.getIdTag());
@@ -337,7 +341,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		
 		// var authStatus = AuthorizationStatus.Accepted;
 		
-		var authStatus = this.CheckIdTag(request.getIdTag());
+		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 		
 		if(authStatus == AuthorizationStatus.Accepted)
 		{
@@ -373,7 +377,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		
 		// var authStatus = AuthorizationStatus.Accepted;
 		
-		var authStatus = this.CheckIdTag(request.getIdTag());
+		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 
 		var tag = new IdTagInfo(authStatus);
 		tag.setParentIdTag(request.getIdTag());
@@ -509,54 +513,6 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 
 		return power;
 	}
-	
-	/**
-	 * Connect to external DB to receive Rfid status.
-	 *
-	 * @param idTag Rfid UID
-	 * @return Rfid status
-	 */
-	@SuppressWarnings("finally")
-	private AuthorizationStatus CheckIdTag(String idTag) {
-		AuthorizationStatus status = AuthorizationStatus.Invalid;
-		String url = "jdbc:postgresql://127.0.0.1:5432/yp_rfids?user=postgres&password=&ssl=false";
-		try {
-			Connection conn = null;
-			Class.forName("org.postgresql.Driver");	
-			conn = DriverManager.getConnection(url);
-			PreparedStatement st = conn.prepareStatement("SELECT * FROM rfid WHERE rfid_uid = ?");
-			st.setString(1, idTag);
-			ResultSet rs = st.executeQuery();
-			if (rs.next())
-			{
-				switch(rs.getString("rfid_status")) {
-				case "Accepted":
-					status = AuthorizationStatus.Accepted;
-					break;
-				case "Blocked":
-					status = AuthorizationStatus.Blocked;
-					break;
-				case "Expired":
-					status = AuthorizationStatus.Expired;
-					break;
-				case "ConcurrentTx":
-					status = AuthorizationStatus.ConcurrentTx;
-					break;
-				default:
-					status = AuthorizationStatus.Invalid;
-				}
-			}
-			rs.close();
-			st.close();
-			
-		} catch (SQLException e) {
-			// e.printStackTrace();
-			this.logDebug("[YP] Database connection fault: " + e.getMessage());
-		}
-		finally {
-			return status;
-		}
-	}	
 
 	private void logDebug(String message) {
 		this.parent.logDebug(this.log, message);

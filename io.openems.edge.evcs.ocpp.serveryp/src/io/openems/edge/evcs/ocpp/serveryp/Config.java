@@ -26,5 +26,21 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Port", description = "The port of to listen on.")
 	int port() default OcppServerImpl.DEFAULT_PORT;
 
+	// RFID external databases for status management
+	@AttributeDefinition(name = "Rfid-DB API endpoint", description = "The database connection string for external RFID auth")
+	String rfid_api_endpoint() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_API_ENDPOINT;
+	
+	@AttributeDefinition(name = "Rfid-DB database connection string", description = "The database connection string for external RFID auth")
+	String rfid_db_connection_string() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_CONNECTION;
+	
+	@AttributeDefinition(name = "Rfid-DB table", description = "The table containing RFIDs")
+	String rfid_db_table() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_TABLE;
+	
+	@AttributeDefinition(name = "Rfid-DB table field for RFID-UID", description = "The field on table for RFIDs UID")
+	String rfid_db_field() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_FIELD;
+	
+	@AttributeDefinition(name = "Rfid-DB table field for RFID status", description = "The field on table for RFIDs status")
+	String rfid_db_status_field() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_FIELD_STATUS;
+	
 	String webconsole_configurationFactory_nameHint() default "EVCS OCPP Server YP [{id}]";
 }

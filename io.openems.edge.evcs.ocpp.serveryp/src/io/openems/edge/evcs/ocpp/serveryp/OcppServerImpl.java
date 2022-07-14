@@ -54,6 +54,9 @@ public class OcppServerImpl extends AbstractOpenemsComponent implements OpenemsC
 	private final Logger log = LoggerFactory.getLogger(OcppServerImpl.class);
 	protected Config config;
 
+	protected DatabaseConnectionHandlerImpl dbapi;
+	
+	
 	/**
 	 * The JSON server.
 	 *
@@ -145,6 +148,7 @@ public class OcppServerImpl extends AbstractOpenemsComponent implements OpenemsC
 		super.activate(context, config.id(), config.alias(), config.enabled());
 
 		this.config = config;
+		this.dbapi.config = config;
 		this.myJsonServer.activate(config.ip(), config.port());
 	}
 
