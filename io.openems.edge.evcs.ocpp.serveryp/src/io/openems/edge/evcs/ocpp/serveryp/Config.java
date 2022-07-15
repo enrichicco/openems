@@ -42,5 +42,8 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Rfid-DB table field for RFID status", description = "The field on table for RFIDs status")
 	String rfid_db_status_field() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_FIELD_STATUS;
 	
+	@AttributeDefinition(name = "Rfid JSON file for RFID status", description = "The ABSOLUTE PATH (with filename.json) for for RFID status")
+	String rfid_json_path() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_JSON_ABSOLUTE_PATH;
+	
 	String webconsole_configurationFactory_nameHint() default "EVCS OCPP Server YP [{id}]";
 }
