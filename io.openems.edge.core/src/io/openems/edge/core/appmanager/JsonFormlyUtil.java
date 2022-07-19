@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.utils.JsonUtils;
 import io.openems.common.utils.JsonUtils.JsonObjectBuilder;
+import io.openems.edge.common.component.OpenemsComponent;
 
 /**
  * Source https://formly.dev/examples/introduction.
@@ -342,7 +343,7 @@ public class JsonFormlyUtil {
 		}
 
 		public InputBuilder setPlaceholder(String placeholder) {
-			if (placeholder != null && placeholder.isBlank()) {
+			if (placeholder != null && !placeholder.isBlank()) {
 				this.templateOptions.addProperty("placeholder", placeholder);
 			} else if (this.templateOptions.has("placeholder")) {
 				this.templateOptions.remove("placeholder");
@@ -546,6 +547,10 @@ public class JsonFormlyUtil {
 	 */
 	public static final class SelectBuilder extends FormlyBuilder<SelectBuilder> {
 
+		public static final Function<OpenemsComponent, String> DEFAULT_COMPONENT_2_LABEL = t -> t.alias() == null
+				|| t.alias().isEmpty() ? t.id() : t.id() + ": " + t.alias();
+		public static final Function<OpenemsComponent, String> DEFAULT_COMPONENT_2_VALUE = OpenemsComponent::id;
+
 		private <PROPERTY extends Enum<PROPERTY>> SelectBuilder(PROPERTY property) {
 			super(property);
 		}
@@ -586,7 +591,7 @@ public class JsonFormlyUtil {
 			return this.setOptions(items, t -> t, t -> t);
 		}
 
-		public <T> SelectBuilder setOptions(List<T> items, Function<T, String> item2Label,
+		public <T> SelectBuilder setOptions(List<? extends T> items, Function<T, String> item2Label,
 				Function<T, String> item2Value) {
 			var options = JsonUtils.buildJsonArray();
 			for (var item : items) {
@@ -653,7 +658,7 @@ public class JsonFormlyUtil {
 		}
 
 		public RepeatBuilder setAddText(String addText) {
-			if (addText != null && addText.isBlank()) {
+			if (addText != null && !addText.isBlank()) {
 				this.templateOptions.addProperty("addText", addText);
 			} else if (this.templateOptions.has("addText")) {
 				this.templateOptions.remove("addText");
