@@ -25,22 +25,47 @@ public class AbstractComponentConfig {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the annotation Type.
+	 * 
+	 * @return the {@link Class}
+	 */
 	public Class<? extends Annotation> annotationType() {
 		return this.annotation;
 	}
 
+	/**
+	 * Gets the Component-ID.
+	 * 
+	 * @return the Component-ID
+	 */
 	public String id() {
 		return this.id;
 	}
 
+	/**
+	 * Gets the Component Alias.
+	 * 
+	 * @return the alias
+	 */
 	public String alias() {
 		return this.id;
 	}
 
+	/**
+	 * Is this Component enabled?.
+	 * 
+	 * @return whether this component is enabled
+	 */
 	public boolean enabled() {
 		return DEFAULT_ENABLED;
 	}
 
+	/**
+	 * Gets the Apache Felix WebConsole configuration factory name hint.
+	 * 
+	 * @return a {@link String}
+	 */
 	public String webconsole_configurationFactory_nameHint() {
 		return "";
 	}
@@ -92,16 +117,6 @@ public class AbstractComponentConfig {
 			result.put(key, value);
 		}
 		return result;
-	}
-
-	public int modbusUnitId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public String Modbus_target() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

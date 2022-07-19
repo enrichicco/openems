@@ -5,9 +5,9 @@
 -resolve.effective: active
 
 -runproperties: \
+	org.osgi.service.http.port=8080,\
 	felix.cm.dir=,\
 	openems.data.dir=,\
-	org.osgi.service.http.port=8080,\
 	org.apache.felix.eventadmin.Timeout=0,\
 	org.ops4j.pax.logging.DefaultServiceLog.level=INFO
 
@@ -32,11 +32,11 @@
 	bnd.identity;id='io.openems.edge.battery.bydcommercial',\
 	bnd.identity;id='io.openems.edge.battery.fenecon.commercial',\
 	bnd.identity;id='io.openems.edge.battery.fenecon.home',\
-	bnd.identity;id='io.openems.edge.battery.soltaro',\
 	bnd.identity;id='io.openems.edge.batteryinverter.kaco.blueplanetgridsave',\
 	bnd.identity;id='io.openems.edge.batteryinverter.refu88k',\
 	bnd.identity;id='io.openems.edge.batteryinverter.sinexcel',\
 	bnd.identity;id='io.openems.edge.batteryinverter.sunspec',\
+	bnd.identity;id='io.openems.edge.battery.soltaro',\
 	bnd.identity;id='io.openems.edge.bosch.bpts5hybrid',\
 	bnd.identity;id='io.openems.edge.bridge.mbus',\
 	bnd.identity;id='io.openems.edge.bridge.modbus',\
@@ -105,6 +105,7 @@
 	bnd.identity;id='io.openems.edge.evcs.goe.chargerhome',\
 	bnd.identity;id='io.openems.edge.evcs.hardybarth',\
 	bnd.identity;id='io.openems.edge.evcs.keba.kecontact',\
+	bnd.identity;id='io.openems.edge.evcs.ocpp.abl',\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.common',\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.ies.keywatt.singleccs',\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.server',\
@@ -254,6 +255,7 @@
 	io.openems.edge.evcs.goe.chargerhome;version=snapshot,\
 	io.openems.edge.evcs.hardybarth;version=snapshot,\
 	io.openems.edge.evcs.keba.kecontact;version=snapshot,\
+	io.openems.edge.evcs.ocpp.abl;version=snapshot,\
 	io.openems.edge.evcs.ocpp.common;version=snapshot,\
 	io.openems.edge.evcs.ocpp.ies.keywatt.singleccs;version=snapshot,\
 	io.openems.edge.evcs.ocpp.server;version=snapshot,\
