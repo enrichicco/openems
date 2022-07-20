@@ -32,7 +32,7 @@ public class DatabaseConnectionHandlerImpl {
 	public static final String RFID_DEFAULT_DB_TABLE = "rfid";
 	public static final String RFID_DEFAULT_DB_FIELD = "rfid_uid";
 	public static final String RFID_DEFAULT_DB_FIELD_STATUS = "rfid_status";
-	public static final String RFID_DEFAULT_JSON_ABSOLUTE_PATH = "/Users/gpoletto/Sites/openems/etc/rfid_auth_list.json";
+	public static final String RFID_DEFAULT_JSON_ABSOLUTE_PATH = "/Users/gpoletto/Sites/openems_org/var/lib/openems/rfid_auth_list.json";
 	
 	public Config config;
 	
