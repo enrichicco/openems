@@ -778,7 +778,14 @@ public class ComponentUtilImpl implements ComponentUtil {
 	@Override
 	public Optional<EdgeConfig.Component> getComponent(String id, String factoryId) {
 		var comp = this.componentManager.getEdgeConfig().getComponent(id);
+<<<<<<< HEAD
 		if (comp.isEmpty() || !comp.get().getFactoryId().equals(factoryId)) {
+=======
+		if (comp.isEmpty()) {
+			return Optional.empty();
+		}
+		if (!comp.get().getFactoryId().equals(factoryId)) {
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 			return Optional.empty();
 		}
 		return comp;

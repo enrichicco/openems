@@ -274,6 +274,7 @@ public class AppManagerImpl extends AbstractOpenemsComponent
 
 			@Override
 			public boolean hasNext() {
+<<<<<<< HEAD
 				// value not obtained
 				if (this.nextConfiguration != null) {
 					return true;
@@ -299,6 +300,25 @@ public class AppManagerImpl extends AbstractOpenemsComponent
 					} finally {
 						this.nextInstance.properties.remove("ALIAS");
 					}
+=======
+				if (this.nextConfiguration == null && !this.instanceIterator.hasNext()) {
+					return false;
+				}
+				this.nextInstance = this.instanceIterator.next();
+
+				try {
+					var app = AppManagerImpl.this.findAppById(this.nextInstance.appId);
+					this.nextInstance.properties.addProperty("ALIAS", this.nextInstance.alias);
+					this.nextConfiguration = app.getAppConfiguration(ConfigurationTarget.VALIDATE,
+							this.nextInstance.properties, null);
+					this.nextInstance.properties.remove("ALIAS");
+				} catch (OpenemsNamedException e) {
+					// move to next app
+				} catch (NoSuchElementException e) {
+					// app not found for instance
+					// this may happen if the app id gets refactored
+					// apps which app ids are not known are printed in debug log as 'UNKNOWAPPS'
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 				}
 
 				return this.nextConfiguration != null;

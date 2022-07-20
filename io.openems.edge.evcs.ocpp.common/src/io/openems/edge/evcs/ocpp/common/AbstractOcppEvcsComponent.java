@@ -108,7 +108,6 @@ public abstract class AbstractOcppEvcsComponent extends AbstractOpenemsComponent
 
 		// Total energy already set
 		if (totalEnergy != null) {
-			
 			return;
 		}
 

@@ -126,6 +126,7 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 	@Override
 	public AppDescriptor getAppDescriptor() {
 		return AppDescriptor.create() //
+				.setWebsiteUrl("https://fenecon.de/home/") //
 				.build();
 	}
 
@@ -137,6 +138,7 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 			var modbusIdInternal = "modbus0";
 			var modbusIdExternal = "modbus1";
 
+<<<<<<< HEAD
 			var hasEmergencyReserve = EnumUtils.getAsOptionalBoolean(p, Property.HAS_EMERGENCY_RESERVE).orElse(false);
 			var emergencyReserveEnabled = EnumUtils.getAsOptionalBoolean(p, Property.EMERGENCY_RESERVE_ENABLED)
 					.orElse(false);
@@ -144,10 +146,16 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 					.orElse(false);
 			var shadowManagmentDisabled = EnumUtils.getAsOptionalBoolean(p, Property.SHADOW_MANAGEMENT_DISABLED)
 					.orElse(false);
+=======
+			var emergencyReserveEnabled = EnumUtils.getAsBoolean(p, Property.EMERGENCY_RESERVE_ENABLED);
+			var rippleControlReceiverActive = EnumUtils.getAsOptionalBoolean(p, Property.RIPPLE_CONTROL_RECEIVER_ACTIV)
+					.orElse(false);
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 			// Battery-Inverter Settings
 			var safetyCountry = EnumUtils.getAsString(p, Property.SAFETY_COUNTRY);
 			int maxFeedInPower;
+<<<<<<< HEAD
 			String feedInSetting;
 			if (!rippleControlReceiverActive) {
 				maxFeedInPower = EnumUtils.getAsInt(p, Property.MAX_FEED_IN_POWER);
@@ -156,6 +164,14 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 				maxFeedInPower = 0;
 				feedInSetting = "UNDEFINED";
 			}
+=======
+			if (!rippleControlReceiverActive) {
+				maxFeedInPower = EnumUtils.getAsInt(p, Property.MAX_FEED_IN_POWER);
+			} else {
+				maxFeedInPower = 0;
+			}
+			var feedInSetting = EnumUtils.getAsString(p, Property.FEED_IN_SETTING);
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 			var bundle = AbstractOpenemsApp.getTranslationBundle(l);
 			var components = Lists.newArrayList(//
@@ -217,7 +233,11 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 									.addProperty("modbusUnitId", 247) //
 									.addProperty("safetyCountry", safetyCountry) //
 									.addProperty("backupEnable", //
+<<<<<<< HEAD
 											hasEmergencyReserve ? "ENABLE" : "DISABLE") //
+=======
+											emergencyReserveEnabled ? "ENABLE" : "DISABLE") //
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 									.addProperty("feedPowerEnable", rippleControlReceiverActive ? "DISABLE" : "ENABLE") //
 									.addProperty("feedPowerPara", maxFeedInPower) //
 									.addProperty("setfeedInPowerSettings", feedInSetting) //
@@ -336,7 +356,11 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 											maxFeedInPower) //
 									.build())
 							.build()),
+<<<<<<< HEAD
 					new DependencyDeclaration("SELF_CONSUMPTION_OPTIMIZATION", //
+=======
+					new DependencyDeclaration("SELF_CONSUMTION_OPTIMIZATION", //
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 							DependencyDeclaration.CreatePolicy.IF_NOT_EXISTING, //
 							DependencyDeclaration.UpdatePolicy.NEVER, //
 							DependencyDeclaration.DeletePolicy.IF_MINE, //
@@ -360,6 +384,7 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 						DependencyDeclaration.DependencyDeletePolicy.NOT_ALLOWED, //
 						DependencyDeclaration.AppDependencyConfig.create() //
 								.setAppId("App.Meter.Socomec") //
+<<<<<<< HEAD
 								.setInitialProperties(JsonUtils.buildJsonObject() //
 										.addProperty(SocomecMeter.Property.TYPE.name(), "PRODUCTION") //
 										.addProperty(SocomecMeter.Property.MODBUS_ID.name(), modbusIdExternal) //
@@ -367,6 +392,10 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 										.build())
 								.setProperties(JsonUtils.buildJsonObject() //
 										.addProperty(SocomecMeter.Property.MODBUS_ID.name(), modbusIdExternal) //
+=======
+								.setProperties(JsonUtils.buildJsonObject() //
+										.addProperty(SocomecMeter.Property.MODBUS_UNIT_ID.name(), 6) //
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 										.build())
 								.build()));
 			}
@@ -378,10 +407,15 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 	@Override
 	public AppAssistant getAppAssistant(Language language) {
 		final var batteryInverter = this.getBatteryInverter();
+<<<<<<< HEAD
 		final var emergencyController = this.componentUtil.getComponent("ctrlEmergencyCapacityReserve0", //
 				"Controller.Ess.EmergencyCapacityReserve");
 		final var emergencyReserveEnabled = emergencyController.map(EdgeConfig.Component::getProperties)
 				.map(t -> t.get("isReserveSocEnabled")).map(JsonElement::getAsBoolean).orElse(false);
+=======
+		final var hasEmergencyReserve = this.componentUtil.getComponent("ctrlEmergencyCapacityReserve0", //
+				"Controller.Ess.EmergencyCapacityReserve").isPresent();
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 		var bundle = AbstractOpenemsApp.getTranslationBundle(language);
 		return AppAssistant.create(this.getName(language)) //
 				.fields(JsonUtils.buildJsonArray() //
@@ -423,7 +457,10 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 								.isRequired(true) //
 								.onlyShowIfNotChecked(Property.RIPPLE_CONTROL_RECEIVER_ACTIV) //
 								.setInputType(Type.NUMBER) //
+<<<<<<< HEAD
 								.setDefaultValue(0) //
+=======
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 								.onlyIf(batteryInverter.isPresent(), f -> {
 									f.setDefaultValue(batteryInverter.get() //
 											.getProperty("feedPowerPara").get());
@@ -488,6 +525,7 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 											return charger.get().getAlias();
 										}))
 								.build())
+<<<<<<< HEAD
 						.add(JsonFormlyUtil.buildCheckbox(Property.HAS_EMERGENCY_RESERVE) //
 								.setLabel(TranslationUtil.getTranslation(bundle,
 										this.getAppId() + ".emergencyPowerSupply.label")) //
@@ -499,6 +537,21 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 										this.getAppId() + ".emergencyPowerEnergy.label")) //
 								.setDefaultValue(emergencyReserveEnabled) //
 								.onlyShowIfChecked(Property.HAS_EMERGENCY_RESERVE) //
+=======
+						.add(JsonFormlyUtil.buildCheckbox(Property.EMERGENCY_RESERVE_ENABLED) //
+								.setLabel(TranslationUtil.getTranslation(bundle,
+										this.getAppId() + ".emergencyPowerSupply.label")) //
+								.isRequired(true) //
+								.onlyIf(batteryInverter.isPresent(), f -> {
+									f.setDefaultValue(batteryInverter.get().getProperty("backupEnable").get()
+											.getAsString().equals("ENABLE"));
+								}).build())
+						.add(JsonFormlyUtil.buildCheckbox(Property.HAS_EMERGENCY_RESERVE) //
+								.setLabel(TranslationUtil.getTranslation(bundle,
+										this.getAppId() + ".emergencyPowerEnergy.label")) //
+								.setDefaultValue(hasEmergencyReserve) //
+								.onlyShowIfChecked(Property.EMERGENCY_RESERVE_ENABLED) //
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 								.build())
 						.add(JsonFormlyUtil.buildInput(Property.EMERGENCY_RESERVE_SOC) //
 								.setLabel(TranslationUtil.getTranslation(bundle,
@@ -506,6 +559,7 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 								.setInputType(Type.NUMBER) //
 								.setMin(0) //
 								.setMax(100) //
+<<<<<<< HEAD
 								.setDefaultValue(5) //
 								.onlyShowIfChecked(Property.EMERGENCY_RESERVE_ENABLED) //
 								// TODO only gets shown when toggling the checkbox 'EMERGENCY_RESERVE_ENABLED'
@@ -521,6 +575,14 @@ public class FeneconHome extends AbstractOpenemsApp<Property> implements Openems
 								.setDescription(TranslationUtil.getTranslation(bundle,
 										this.getAppId() + ".shadowManagementDisabled.description")) //
 								.build())
+=======
+								.onlyShowIfChecked(Property.HAS_EMERGENCY_RESERVE) //
+								.onlyIf(hasEmergencyReserve, f -> {
+									f.setDefaultValue(this.componentManager.getEdgeConfig()
+											.getComponent("ctrlEmergencyCapacityReserve0").get()
+											.getProperty("reserveSoc").get().getAsNumber());
+								}).build())
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 						.build()) //
 				.build();
 	}

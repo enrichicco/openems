@@ -119,14 +119,4 @@ public class AbstractComponentConfig {
 		return result;
 	}
 
-	public int modbusUnitId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public String Modbus_target() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

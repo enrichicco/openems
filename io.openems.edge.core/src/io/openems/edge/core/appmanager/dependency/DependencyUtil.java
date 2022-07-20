@@ -50,7 +50,14 @@ public class DependencyUtil {
 
 	private static final AppManagerImpl getAppManagerImpl(ComponentManager componentManager) {
 		var appManager = componentManager.getEnabledComponentsOfType(AppManager.class);
+<<<<<<< HEAD
 		if (appManager.size() != 1 || !(appManager.get(0) instanceof AppManagerImpl)) {
+=======
+		if (appManager.size() != 1) {
+			return null;
+		}
+		if (!(appManager.get(0) instanceof AppManagerImpl)) {
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 			return null;
 		}
 		return (AppManagerImpl) appManager.get(0);

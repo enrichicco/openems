@@ -2,6 +2,10 @@ package io.openems.edge.app.api;
 
 import java.util.EnumMap;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.TreeMap;
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -32,7 +36,12 @@ import io.openems.edge.core.appmanager.OpenemsApp;
 import io.openems.edge.core.appmanager.OpenemsAppCardinality;
 import io.openems.edge.core.appmanager.OpenemsAppCategory;
 import io.openems.edge.core.appmanager.TranslationUtil;
+<<<<<<< HEAD
 import io.openems.edge.core.appmanager.dependency.DependencyDeclaration;
+=======
+import io.openems.edge.core.appmanager.validator.CheckAppsNotInstalled;
+import io.openems.edge.core.appmanager.validator.ValidatorConfig;
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 /**
  * Describes a App for ReadWrite Modbus/TCP Api.
@@ -159,8 +168,19 @@ public class ModbusTcpApiReadWrite extends AbstractOpenemsApp<Property> implemen
 									.build())
 							.build()));
 
+<<<<<<< HEAD
 			return new AppConfiguration(components, null, null, dependencies);
 		};
+=======
+	@Override
+	protected io.openems.edge.core.appmanager.validator.ValidatorConfig.Builder getValidateBuilder() {
+		return ValidatorConfig.create() //
+				.setInstallableCheckableConfigs(
+						Lists.newArrayList(new ValidatorConfig.CheckableConfig(CheckAppsNotInstalled.COMPONENT_NAME,
+								new ValidatorConfig.MapBuilder<>(new TreeMap<String, Object>()) //
+										.put("appIds", new String[] { "App.Api.ModbusTcp.ReadOnly" }) //
+										.build())));
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 	}
 
 	@Override

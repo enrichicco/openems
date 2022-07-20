@@ -19,7 +19,10 @@ import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.session.Language;
 import io.openems.common.session.Role;
 import io.openems.common.utils.JsonUtils;
+<<<<<<< HEAD
 import io.openems.common.utils.ReflectionUtils;
+=======
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 import io.openems.edge.app.TestADependencyToC;
 import io.openems.edge.app.TestBDependencyToC;
 import io.openems.edge.app.TestC;
@@ -125,10 +128,13 @@ public class AppManagerAppHelperImplTest {
 		var appManagerAppHelper = new AppManagerAppHelperImpl(this.componentManger, this.componentUtil, this.validator,
 				componentTask, schedulerTask, staticIpTask);
 
+<<<<<<< HEAD
 		// use this so the appManagerAppHelper does not has to be a OpenemsComponent and
 		// the attribute can still be private
 		ReflectionUtils.setAttribute(appManagerAppHelper.getClass(), appManagerAppHelper, "appManager", this.sut);
 
+=======
+>>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 		new ComponentTest(this.sut) //
 				.addReference("cm", this.cm) //
 				.addReference("componentManager", this.componentManger) //
