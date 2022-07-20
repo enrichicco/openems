@@ -16,4 +16,5 @@ Bundle-Version: 1.0.0.${tstamp}
 	org.postgresql.jdbc, \
 
 -testpath: \
-	${testpath}
+	${testpath},\
+	io.openems.common
