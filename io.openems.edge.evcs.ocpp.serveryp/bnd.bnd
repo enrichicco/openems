@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.${tstamp}
 -buildpath: \
 	${buildpath},\
 	Java-WebSocket,\
+	com.google.gson,\
 	io.openems.common,\
 	io.openems.edge.common,\
 	io.openems.edge.evcs.api,\
