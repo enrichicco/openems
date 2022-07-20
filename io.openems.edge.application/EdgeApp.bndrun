@@ -155,7 +155,9 @@
 	bnd.identity;id='io.openems.edge.timeofusetariff.awattar',\
 	bnd.identity;id='io.openems.edge.timeofusetariff.corrently',\
 	bnd.identity;id='io.openems.edge.timeofusetariff.tibber',\
-
+	bnd.identity;id='io.openems.edge.evcs.ocpp.serveryp';version=latest,\
+	bnd.identity;id='io.openems.edge.evcs.ocpp.generic';version=latest
+	
 -runbundles: \
 	Java-WebSocket;version='[1.5.3,1.5.4)',\
 	com.fazecast.jSerialComm;version='[2.5.1,2.5.2)',\
@@ -165,7 +167,6 @@
 	com.google.guava.failureaccess;version='[1.0.1,1.0.2)',\
 	com.squareup.okio;version='[2.10.0,2.10.1)',\
 	com.sun.jna;version='[5.11.0,5.11.1)',\
-	io.gsonfire;version='[1.8.5,1.8.6)',\
 	io.openems.common;version=snapshot,\
 	io.openems.edge.application;version=snapshot,\
 	io.openems.edge.battery.api;version=snapshot,\
@@ -175,6 +176,7 @@
 	io.openems.edge.battery.fenecon.home;version=snapshot,\
 	io.openems.edge.battery.soltaro;version=snapshot,\
 	io.openems.edge.batteryinverter.api;version=snapshot,\
+	io.gsonfire;version='[1.8.5,1.8.6)',\
 	io.openems.edge.batteryinverter.kaco.blueplanetgridsave;version=snapshot,\
 	io.openems.edge.batteryinverter.refu88k;version=snapshot,\
 	io.openems.edge.batteryinverter.sinexcel;version=snapshot,\
@@ -352,4 +354,7 @@
 	org.osgi.util.function;version='[1.2.0,1.2.1)',\
 	org.osgi.util.promise;version='[1.2.0,1.2.1)',\
 	org.reactivestreams.reactive-streams;version='[1.0.3,1.0.4)',\
-	rrd4j;version='[3.8.1,3.8.2)'
+	rrd4j;version='[3.8.1,3.8.2)',\
+	io.openems.edge.evcs.ocpp.serveryp;version=snapshot,\
+	org.postgresql.jdbc;version='[42.3.5,42.3.6)',\
+	io.openems.edge.evcs.ocpp.generic;version=snapshot
