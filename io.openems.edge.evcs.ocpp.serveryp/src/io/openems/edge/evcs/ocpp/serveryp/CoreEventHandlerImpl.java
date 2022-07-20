@@ -75,12 +75,18 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	public AuthorizeConfirmation handleAuthorizeRequest(UUID sessionIndex, AuthorizeRequest request) {
 
 		this.logDebug("Handle AuthorizeRequest: " + request);
+<<<<<<< HEAD
 		this.logDebug("[YP] RFID-ID: " + request.getIdTag());
 		
 		// var authStatus = AuthorizationStatus.Accepted;
 		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 
 		var tag = new IdTagInfo(authStatus);
+=======
+		this.logDebug("IdTaG: " + request.getIdTag());
+		
+		var tag = new IdTagInfo(AuthorizationStatus.Accepted);
+>>>>>>> 98b8f121828bb5cef2481494ab8fedefce160db6
 		tag.setParentIdTag(request.getIdTag());
 		return new AuthorizeConfirmation(tag);
 	}
@@ -338,6 +344,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			StartTransactionRequest request) {
 
 		this.logDebug("Handle StartTransactionRequest: " + request);
+<<<<<<< HEAD
 		
 		// var authStatus = AuthorizationStatus.Accepted;
 		
@@ -363,6 +370,9 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			evcs.channel(OcppServerChannelId.GC_METER_START).setNextValue(request.getMeterStart());
 		
 		}
+=======
+		this.logDebug("IdTaG: " + request.getIdTag());
+>>>>>>> 98b8f121828bb5cef2481494ab8fedefce160db6
 
 		var idTagInfo = new IdTagInfo(authStatus);
 		idTagInfo.setParentIdTag(request.getIdTag());
@@ -374,10 +384,14 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	public StopTransactionConfirmation handleStopTransactionRequest(UUID sessionIndex, StopTransactionRequest request) {
 
 		this.logDebug("Handle StopTransactionRequest: " + request);
+<<<<<<< HEAD
 		
 		// var authStatus = AuthorizationStatus.Accepted;
 		
 		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
+=======
+		this.logDebug("IdTaG: " + request.getIdTag());
+>>>>>>> 98b8f121828bb5cef2481494ab8fedefce160db6
 
 		var tag = new IdTagInfo(authStatus);
 		tag.setParentIdTag(request.getIdTag());
