@@ -13,6 +13,8 @@ Bundle-Version: 1.0.0.${tstamp}
 	io.openems.edge.meter.api,\
 	io.openems.edge.timedata.api,\
 	io.openems.wrapper.eu.chargetime.ocpp,\
+	org.postgresql.jdbc, \
 
 -testpath: \
-	${testpath}
+	${testpath},\
+	io.openems.common

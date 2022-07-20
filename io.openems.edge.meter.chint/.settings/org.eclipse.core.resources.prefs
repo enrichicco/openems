@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/io/openems/edge/meter/chint/Chint6XXMeter.java=UTF-8
+encoding//src/io/openems/edge/meter/chint/Chint6XXMeterImpl.java=UTF-8
+encoding//src/io/openems/edge/meter/chint/Config.java=UTF-8
+encoding//test/io/openems/edge/meter/chint/MyConfig.java=UTF-8
+encoding//test/io/openems/edge/meter/chint/MyModbusDeviceTest.java=UTF-8
+encoding/bnd.bnd=UTF-8
+encoding/readme.adoc=UTF-8

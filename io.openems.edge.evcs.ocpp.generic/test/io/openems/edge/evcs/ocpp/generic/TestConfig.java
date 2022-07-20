@@ -1,6 +1,6 @@
 package io.openems.edge.evcs.ocpp.generic;
 
-import io.openems.edge.common.test.AbstractComponentConfig;
+import io.openems.common.test.AbstractComponentConfig;
 import io.openems.edge.evcs.ocpp.generic.Config;
 
 @SuppressWarnings("all")

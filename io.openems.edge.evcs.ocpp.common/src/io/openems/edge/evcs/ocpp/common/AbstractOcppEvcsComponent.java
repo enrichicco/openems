@@ -114,8 +114,9 @@ public abstract class AbstractOcppEvcsComponent extends AbstractOpenemsComponent
 
 		var timedata = this.getTimedata();
 		var componentId = this.id();
+		// added by yp: 20220622 - ES (to avoid null poiner excpt...)
 		if (timedata == null || componentId == null) {
-			// qui manca qualcosa perchÃ© Ã© vuoto
+			// qui manca qualcosa perché é vuoto
 			// per ora aggiungo un return per non avere NPexception 
 			return;
 		}
@@ -140,6 +141,12 @@ public abstract class AbstractOcppEvcsComponent extends AbstractOpenemsComponent
 		super.deactivate();
 	}
 
+	/**
+	 * New session started.
+	 * 
+	 * @param server    the {@link OcppServer}
+	 * @param sessionId the session {@link UUID}
+	 */
 	public void newSession(OcppServer server, UUID sessionId) {
 		this.ocppServer = server;
 		this.sessionId = sessionId;
@@ -147,6 +154,9 @@ public abstract class AbstractOcppEvcsComponent extends AbstractOpenemsComponent
 		this._setChargingstationCommunicationFailed(false);
 	}
 
+	/**
+	 * Session lost.
+	 */
 	public void lostSession() {
 		this.ocppServer = null;
 		this.sessionId = null;
@@ -154,16 +164,46 @@ public abstract class AbstractOcppEvcsComponent extends AbstractOpenemsComponent
 		this._setChargingstationCommunicationFailed(true);
 	}
 
+	/**
+	 * Get the supported measurements.
+	 * 
+	 * @return a Set of {@link OcppInformations}
+	 */
 	public abstract Set<OcppInformations> getSupportedMeasurements();
 
+	/**
+	 * Get configured OCPP-ID.
+	 * 
+	 * @return the OCPP-ID
+	 */
 	public abstract String getConfiguredOcppId();
 
+	/**
+	 * Get configured Connector-ID.
+	 * 
+	 * @return the Connector-ID
+	 */
 	public abstract Integer getConfiguredConnectorId();
 
+	/**
+	 * Get configured maximum hardware power.
+	 * 
+	 * @return the maximum hardware power
+	 */
 	public abstract Integer getConfiguredMaximumHardwarePower();
 
+	/**
+	 * Get configured minimum hardware power.
+	 * 
+	 * @return the minimum hardware power
+	 */
 	public abstract Integer getConfiguredMinimumHardwarePower();
 
+	/**
+	 * Returns the Session Energy.
+	 * 
+	 * @return true if yes
+	 */
 	public abstract boolean returnsSessionEnergy();
 
 	/**
