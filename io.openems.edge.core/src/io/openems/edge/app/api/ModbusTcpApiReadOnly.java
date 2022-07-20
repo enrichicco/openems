@@ -93,12 +93,9 @@ public class ModbusTcpApiReadOnly extends AbstractOpenemsApp<Property> implement
 	@Override
 	protected ThrowingTriFunction<ConfigurationTarget, EnumMap<Property, JsonElement>, Language, AppConfiguration, OpenemsNamedException> appConfigurationFactory() {
 		return (t, p, l) -> {
-<<<<<<< HEAD
 			if (!EnumUtils.getAsOptionalBoolean(p, Property.ACTIVE).orElse(true)) {
 				return new AppConfiguration();
 			}
-=======
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 			var controllerId = this.getId(t, p, Property.CONTROLLER_ID, "ctrlApiModbusTcp0");
 

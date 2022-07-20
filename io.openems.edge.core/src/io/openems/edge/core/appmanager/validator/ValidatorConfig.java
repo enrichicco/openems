@@ -57,14 +57,7 @@ public class ValidatorConfig {
 			if (this == obj) {
 				return true;
 			}
-<<<<<<< HEAD
 			if (obj == null || this.getClass() != obj.getClass()) {
-=======
-			if (obj == null) {
-				return false;
-			}
-			if (this.getClass() != obj.getClass()) {
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 				return false;
 			}
 			var other = (CheckableConfig) obj;

@@ -88,11 +88,7 @@ public class KostalPvInverter extends AbstractPvInverter<Property> implements Op
 			var factoryIdInverter = "PV-Inverter.Kostal";
 			var components = this.getComponents(factoryIdInverter, pvInverterId, modbusId, alias, ip, port);
 			var inverter = AbstractOpenemsApp.getComponentWithFactoryId(components, factoryIdInverter);
-<<<<<<< HEAD
 			inverter.getProperties().put("modbusUnitId", new JsonPrimitive(modbusUnitId));
-=======
-			inverter.getProperties().put("modbusUnitId", JsonUtils.parse(Integer.toString(modbusUnitId)));
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 			return new AppConfiguration(components);
 		};

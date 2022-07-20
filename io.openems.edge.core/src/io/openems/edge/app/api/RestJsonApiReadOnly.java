@@ -2,10 +2,6 @@ package io.openems.edge.app.api;
 
 import java.util.EnumMap;
 import java.util.List;
-<<<<<<< HEAD
-=======
-import java.util.TreeMap;
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -32,11 +28,6 @@ import io.openems.edge.core.appmanager.ConfigurationTarget;
 import io.openems.edge.core.appmanager.OpenemsApp;
 import io.openems.edge.core.appmanager.OpenemsAppCardinality;
 import io.openems.edge.core.appmanager.OpenemsAppCategory;
-<<<<<<< HEAD
-=======
-import io.openems.edge.core.appmanager.validator.CheckAppsNotInstalled;
-import io.openems.edge.core.appmanager.validator.ValidatorConfig;
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 /**
  * Describes a App for ReadOnly Rest JSON Api.
@@ -99,12 +90,9 @@ public class RestJsonApiReadOnly extends AbstractOpenemsApp<Property> implements
 	@Override
 	protected ThrowingTriFunction<ConfigurationTarget, EnumMap<Property, JsonElement>, Language, AppConfiguration, OpenemsNamedException> appConfigurationFactory() {
 		return (t, p, l) -> {
-<<<<<<< HEAD
 			if (!EnumUtils.getAsOptionalBoolean(p, Property.ACTIVE).orElse(true)) {
 				return new AppConfiguration();
 			}
-=======
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 			var controllerId = this.getId(t, p, Property.CONTROLLER_ID, "ctrlApiRest0");
 
 			List<EdgeConfig.Component> components = Lists.newArrayList(//
@@ -117,19 +105,6 @@ public class RestJsonApiReadOnly extends AbstractOpenemsApp<Property> implements
 	}
 
 	@Override
-<<<<<<< HEAD
-=======
-	public ValidatorConfig.Builder getValidateBuilder() {
-		return ValidatorConfig.create() //
-				.setInstallableCheckableConfigs(Lists.newArrayList(//
-						new ValidatorConfig.CheckableConfig(CheckAppsNotInstalled.COMPONENT_NAME,
-								new ValidatorConfig.MapBuilder<>(new TreeMap<String, Object>()) //
-										.put("appIds", new String[] { "App.Api.RestJson.ReadWrite" }) //
-										.build())));
-	}
-
-	@Override
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 	protected Class<Property> getPropertyClass() {
 		return Property.class;
 	}

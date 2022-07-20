@@ -2,10 +2,6 @@ package io.openems.edge.app.meter;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-<<<<<<< HEAD
-=======
-import java.util.TreeMap;
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -13,7 +9,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
@@ -35,11 +30,6 @@ import io.openems.edge.core.appmanager.JsonFormlyUtil.InputBuilder.Type;
 import io.openems.edge.core.appmanager.OpenemsApp;
 import io.openems.edge.core.appmanager.OpenemsAppCardinality;
 import io.openems.edge.core.appmanager.TranslationUtil;
-<<<<<<< HEAD
-=======
-import io.openems.edge.core.appmanager.validator.CheckHome;
-import io.openems.edge.core.appmanager.validator.ValidatorConfig;
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 /**
  * Describes a App for a Socomec meter.
@@ -115,7 +105,6 @@ public class SocomecMeter extends AbstractMeterApp<Property> implements OpenemsA
 								.setLabel(TranslationUtil.getTranslation(bundle, "App.Meter.mountType.label")) //
 								.setOptions(this.buildMeterOptions(language)) //
 								.setDefaultValue("PRODUCTION") //
-<<<<<<< HEAD
 								.build()) //
 						.add(JsonFormlyUtil.buildSelect(Property.MODBUS_ID) //
 								.setLabel(TranslationUtil.getTranslation(bundle, "modbusId")) //
@@ -123,8 +112,6 @@ public class SocomecMeter extends AbstractMeterApp<Property> implements OpenemsA
 								.setOptions(this.componentUtil.getEnabledComponentsOfStartingId("modbus"),
 										JsonFormlyUtil.SelectBuilder.DEFAULT_COMPONENT_2_LABEL,
 										JsonFormlyUtil.SelectBuilder.DEFAULT_COMPONENT_2_VALUE) //
-=======
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 								.build()) //
 						.add(JsonFormlyUtil.buildInput(Property.MODBUS_UNIT_ID) //
 								.setLabel(TranslationUtil.getTranslation(bundle, "modbusUnitId")) //
@@ -145,18 +132,6 @@ public class SocomecMeter extends AbstractMeterApp<Property> implements OpenemsA
 	}
 
 	@Override
-<<<<<<< HEAD
-=======
-	public ValidatorConfig.Builder getValidateBuilder() {
-		return ValidatorConfig.create() //
-				.setCompatibleCheckableConfigs(Lists.newArrayList(//
-						new ValidatorConfig.CheckableConfig(CheckHome.COMPONENT_NAME,
-								new ValidatorConfig.MapBuilder<>(new TreeMap<String, Object>()) //
-										.build())));
-	}
-
-	@Override
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 	protected Class<Property> getPropertyClass() {
 		return Property.class;
 	}

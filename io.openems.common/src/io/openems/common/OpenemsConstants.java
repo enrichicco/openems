@@ -22,11 +22,7 @@ public class OpenemsConstants {
 	 * <p>
 	 * This is the month of the release.
 	 */
-<<<<<<< HEAD
 	public static final short VERSION_MINOR = 8;
-=======
-	public static final short VERSION_MINOR = 7;
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 	/**
 	 * The patch version of OpenEMS.

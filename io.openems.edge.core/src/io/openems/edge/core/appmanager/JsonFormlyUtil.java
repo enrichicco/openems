@@ -16,10 +16,7 @@ import com.google.gson.JsonObject;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.utils.JsonUtils;
 import io.openems.common.utils.JsonUtils.JsonObjectBuilder;
-<<<<<<< HEAD
 import io.openems.edge.common.component.OpenemsComponent;
-=======
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 /**
  * Source https://formly.dev/examples/introduction.
@@ -594,11 +591,7 @@ public class JsonFormlyUtil {
 			return this.setOptions(items, t -> t, t -> t);
 		}
 
-<<<<<<< HEAD
 		public <T> SelectBuilder setOptions(List<? extends T> items, Function<T, String> item2Label,
-=======
-		public <T> SelectBuilder setOptions(List<T> items, Function<T, String> item2Label,
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 				Function<T, String> item2Value) {
 			var options = JsonUtils.buildJsonArray();
 			for (var item : items) {
@@ -665,11 +658,7 @@ public class JsonFormlyUtil {
 		}
 
 		public RepeatBuilder setAddText(String addText) {
-<<<<<<< HEAD
 			if (addText != null && !addText.isBlank()) {
-=======
-			if (addText != null && addText.isBlank()) {
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 				this.templateOptions.addProperty("addText", addText);
 			} else if (this.templateOptions.has("addText")) {
 				this.templateOptions.remove("addText");

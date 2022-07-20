@@ -13,7 +13,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
@@ -36,11 +35,6 @@ import io.openems.edge.core.appmanager.JsonFormlyUtil.InputBuilder.Validation;
 import io.openems.edge.core.appmanager.OpenemsApp;
 import io.openems.edge.core.appmanager.OpenemsAppCardinality;
 import io.openems.edge.core.appmanager.TranslationUtil;
-<<<<<<< HEAD
-=======
-import io.openems.edge.core.appmanager.validator.CheckHome;
-import io.openems.edge.core.appmanager.validator.ValidatorConfig;
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 
 /**
  * Describes a App for a Janitza meter.
@@ -164,18 +158,6 @@ public class JanitzaMeter extends AbstractMeterApp<Property> implements OpenemsA
 	}
 
 	@Override
-<<<<<<< HEAD
-=======
-	public ValidatorConfig.Builder getValidateBuilder() {
-		return ValidatorConfig.create() //
-				.setCompatibleCheckableConfigs(Lists.newArrayList(//
-						new ValidatorConfig.CheckableConfig(CheckHome.COMPONENT_NAME,
-								new ValidatorConfig.MapBuilder<>(new TreeMap<String, Object>()) //
-										.build())));
-	}
-
-	@Override
->>>>>>> f1b1099c23c9448c177eb072f4dc042242a5d301
 	protected Class<Property> getPropertyClass() {
 		return Property.class;
 	}
