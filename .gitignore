@@ -33,7 +33,7 @@ testem.log
 #System Files
 .DS_Store
 .gradle/
-/generated/
+**/generated/
 
 ### Eclipse ###
 
@@ -45,7 +45,6 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.settings/
 .loadpath
 .recommenders
 
