@@ -1,8 +1,12 @@
 package io.openems.edge.timedata.influxdb;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
@@ -28,6 +32,8 @@ import com.influxdb.client.write.Point;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.timedata.Resolution;
 import io.openems.common.types.ChannelAddress;
+import io.openems.common.types.EdgeConfig.Component.Channel;
+import io.openems.edge.common.channel.Doc;
 import io.openems.edge.common.component.AbstractOpenemsComponent;
 import io.openems.edge.common.component.ComponentManager;
 import io.openems.edge.common.component.OpenemsComponent;
@@ -122,6 +128,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 			this.componentManager.getEnabledComponents().stream().filter(OpenemsComponent::isEnabled)
 					.forEach(component -> {
 						component.channels().forEach(channel -> {
+							
 							switch (channel.channelDoc().getAccessMode()) {
 							case WRITE_ONLY:
 								// ignore Write-Only-Channels
@@ -138,6 +145,12 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 							}
 							Object value = valueOpt.get();
 							var address = channel.address().toString();
+							try {
+								this.writeChannelToFile(address);
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 							try {
 								switch (channel.getType()) {
 								case BOOLEAN:
@@ -176,6 +189,27 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 			}
 		}
 	}
+	
+	public void writeChannelToFile(String address) 
+			  throws IOException {
+			    var fileName = "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
+			    
+			    try (Scanner scanner = new Scanner(fileName)) {
+					while (scanner.hasNextLine()) {
+						String line = scanner.nextLine();
+						if(line.contains(address)) { 
+					        return;
+					    }
+						else
+						{
+							BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+						    writer.newLine();
+						    writer.append(address);
+						    writer.close();
+						}
+					}
+				}
+			}
 
 	@Override
 	public SortedMap<ZonedDateTime, SortedMap<ChannelAddress, JsonElement>> queryHistoricData(String edgeId,

@@ -5,22 +5,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Reader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import eu.chargetime.ocpp.model.core.AuthorizationStatus;
@@ -55,7 +51,9 @@ public class DatabaseConnectionHandlerImpl {
 		AuthorizationStatus status = AuthorizationStatus.Invalid;
 		String returned_status = "";
 		String db_url = this.config.rfid_db_connection_string();
-		String api_endpoint = this.config.rfid_api_endpoint();
+		
+		// TODO: API connection
+		// String api_endpoint = this.config.rfid_api_endpoint();
 		
 		// 1 - try connecting database
 		if(db_url != "")
@@ -140,7 +138,7 @@ public class DatabaseConnectionHandlerImpl {
 	    	Gson gson = new Gson();
 	    	Reader reader = Files.newBufferedReader(Paths.get(filepath));
 	    	
-	    	List<HashMap<String,String>> MrfidArray = new Gson().fromJson(reader, new TypeToken<List<HashMap<String,String>>>(){}.getType());
+	    	List<HashMap<String,String>> MrfidArray = gson.fromJson(reader, new TypeToken<List<HashMap<String,String>>>(){}.getType());
 	    	
 	    	List<HashMap<String, String>> rFids = MrfidArray.stream()
 												.filter(p -> p.get(db_field).equals(idTag))

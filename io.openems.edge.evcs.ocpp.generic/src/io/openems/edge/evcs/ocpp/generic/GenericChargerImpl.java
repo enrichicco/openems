@@ -38,17 +38,6 @@ import io.openems.edge.evcs.ocpp.common.OcppInformations;
 import io.openems.edge.evcs.ocpp.common.OcppProfileType;
 import io.openems.edge.evcs.ocpp.common.OcppStandardRequests;
 
-// TODO: verify if necessary
-import io.openems.edge.common.channel.Doc;
-import eu.chargetime.ocpp.Session;
-import eu.chargetime.ocpp.model.core.MeterValuesRequest;
-import io.openems.edge.common.component.AbstractOpenemsComponent;
-import io.openems.edge.evcs.ocpp.common.ChargingProperty;
-import io.openems.edge.evcs.ocpp.generic.GenericChannelId;
-import io.openems.edge.common.channel.Channel;
-import io.openems.edge.common.channel.WriteChannel;
-import java.net.UnknownHostException;
-import org.osgi.service.event.EventConstants;
 
 @Designate(ocd = Config.class, factory = true)
 @Component(//
