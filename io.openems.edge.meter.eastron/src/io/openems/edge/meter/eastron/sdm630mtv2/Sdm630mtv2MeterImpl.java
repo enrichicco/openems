@@ -1,4 +1,4 @@
-package io.openems.edge.meter.eastron;
+package io.openems.edge.meter.eastron.sdm630mtv2;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -61,7 +61,7 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 				ModbusComponent.ChannelId.values(), //
 				SymmetricMeter.ChannelId.values(), //
 				AsymmetricMeter.ChannelId.values(), //
-				Chint6XXMeter.ChannelId.values() //
+				Sdm630mtv2Meter.ChannelId.values() //
 		);
 	}
 
@@ -105,18 +105,18 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		modbusProtocol.addTask(
 				new FC3ReadRegistersTask(0x2000, Priority.HIGH, //
 						
-					    m(Chint6XXMeter.ChannelId.VOLTAGE_FL12, new FloatDoublewordElement(0x2000), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL12, new FloatDoublewordElement(0x2000), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Chint6XXMeter.ChannelId.VOLTAGE_FL23, new FloatDoublewordElement(0x2002), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL23, new FloatDoublewordElement(0x2002), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Chint6XXMeter.ChannelId.VOLTAGE_FL31, new FloatDoublewordElement(0x2004), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL31, new FloatDoublewordElement(0x2004), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
 						
-					    m(Chint6XXMeter.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0x2006), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0x2006), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Chint6XXMeter.ChannelId.VOLTAGE_FL2, new FloatDoublewordElement(0x2008), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL2, new FloatDoublewordElement(0x2008), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Chint6XXMeter.ChannelId.VOLTAGE_FL3, new FloatDoublewordElement(0x200A), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL3, new FloatDoublewordElement(0x200A), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1)
 						
 /*				    m(MeterAlgo2UEM1P5_4DS_E.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0x1000), 
@@ -177,31 +177,31 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 	}
 	
 	public Value<Float> getFVoltageFL1() {
-		return this.getFloatGenericChannel(Chint6XXMeter.ChannelId.VOLTAGE_FL1).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL1).value();
 	}
 	
 	public Value<Float> getFVoltageFL2() {
-		return this.getFloatGenericChannel(Chint6XXMeter.ChannelId.VOLTAGE_FL2).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL2).value();
 	}
 	
 	public Value<Float> getFVoltageFL3() {
-		return this.getFloatGenericChannel(Chint6XXMeter.ChannelId.VOLTAGE_FL3).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL3).value();
 	}
 	
 	public Value<Float> getFVoltageFL12() {
-		return this.getFloatGenericChannel(Chint6XXMeter.ChannelId.VOLTAGE_FL12).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL12).value();
 	}
 	
 	public Value<Float> getFVoltageFL23() {
-		return this.getFloatGenericChannel(Chint6XXMeter.ChannelId.VOLTAGE_FL23).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL23).value();
 	}
 	
 	public Value<Float> getFVoltageFL31() {
-		return this.getFloatGenericChannel(Chint6XXMeter.ChannelId.VOLTAGE_FL31).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL31).value();
 	}
 
 	public Value<Long> getRunningRegs(){
-		return this.getLongGenericChannel(Chint6XXMeter.ChannelId.METAS_COUNTER_REGSET_IN_USE).value();
+		return this.getLongGenericChannel(Sdm630mtv2Meter.ChannelId.METAS_COUNTER_REGSET_IN_USE).value();
 	}
 
 	

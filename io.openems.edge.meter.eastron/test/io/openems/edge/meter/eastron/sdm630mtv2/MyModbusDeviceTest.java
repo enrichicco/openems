@@ -1,4 +1,4 @@
-package io.openems.edge.meter.eastron;
+package io.openems.edge.meter.eastron.sdm630mtv2;
 
 import org.junit.Test;
 

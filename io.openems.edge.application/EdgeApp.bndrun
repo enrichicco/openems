@@ -158,7 +158,8 @@
 	bnd.identity;id='io.openems.edge.evcs.ocpp.serveryp';version=latest,\
 	bnd.identity;id='io.openems.edge.evcs.ocpp.generic';version=latest,\
 	bnd.identity;id='io.openems.edge.meter.algo2';version=latest,\
-	bnd.identity;id='io.openems.edge.meter.chint';version=latest
+	bnd.identity;id='io.openems.edge.meter.chint';version=latest,\
+	bnd.identity;id='io.openems.edge.meter.eastron';version=latest
 	
 -runbundles: \
 	Java-WebSocket;version='[1.5.3,1.5.4)',\
@@ -361,6 +362,7 @@
 	org.postgresql.jdbc;version='[42.3.5,42.3.6)',\
 	io.openems.edge.evcs.ocpp.generic;version=snapshot,\
 	io.openems.edge.meter.algo2;version=snapshot,\
-	io.openems.edge.meter.chint;version=snapshot
+	io.openems.edge.meter.chint;version=snapshot,\
+	io.openems.edge.meter.eastron;version=snapshot
 	
 	
