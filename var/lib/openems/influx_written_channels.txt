@@ -74,3 +74,5 @@ _sum/GridMode
 _sum/_PropertyIgnoreStateComponents
 _sum/State
 _sum/_PropertyApps
+influx0/_PropertyFileKeyValidurl
+influx0/_PropertyIsOnlyOnFile

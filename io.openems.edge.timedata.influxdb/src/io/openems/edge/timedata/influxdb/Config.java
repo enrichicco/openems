@@ -40,6 +40,12 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	
 	@AttributeDefinition(name = "Text file URL", description = "The text file URL for saving all data keys")
 	String fileKeyurl() default "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
+	
+	@AttributeDefinition(name = "Write ONLY channels present on custom text file", description = "Activate a function to write on InfluxDB only data keys (channels name) present on a custom text file")
+	boolean isOnlyOnFile() default false;
+	
+	@AttributeDefinition(name = "Custom text file URL", description = "The text file containing data keys to be written on InfluxDB (URL)")
+	String fileKeyValidurl() default "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_valid_channels.txt";
 
 	String webconsole_configurationFactory_nameHint() default "Timedata InfluxDB [{id}]";
 }

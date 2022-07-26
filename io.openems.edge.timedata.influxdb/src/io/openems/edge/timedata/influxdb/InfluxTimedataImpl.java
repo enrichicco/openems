@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
@@ -160,7 +162,52 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 								} catch (IOException e1) {
 									e1.printStackTrace();
 								}
-							}	
+							}
+							/*
+							 *  Write to InfuxDB only addresses present on local TXT file
+							 *  added by YouPower AG for internal use
+							 */
+							if(config.isOnlyOnFile())
+							{
+								var keysFileName = config.fileKeyValidurl();
+								Path path = Paths.get(keysFileName);
+								if(Files.exists(path) && !Files.isDirectory(path)) {
+								      
+								      try {
+										BufferedReader readerLocal  = new BufferedReader(new FileReader(keysFileName));
+										  String lineLocal = readerLocal.readLine();
+										  boolean notWriteAddress = false;
+										  
+										  while (lineLocal != null) {
+											 // channel value is present on local file --> write to InfluxDB
+											 if (lineLocal.contains(address))
+											 {
+										    	 notWriteAddress = true;
+										    	 this.logInfo(log, "Written to InfluxDB: " + address);
+										    	 
+											 }
+											 lineLocal = readerLocal.readLine();
+										  }
+										  
+										  readerLocal.close();
+										  
+										// channel value is present on local file --> NOT write to InfluxDB
+									    if(notWriteAddress == false) 
+										  {
+											  this.logInfo(log, "NOT written to InfluxDB: " + address + "(jump address)");
+											  return;
+										  }
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+								else
+								{
+									// Local txt file not present: next value
+									return;
+								}	
+							}
 							
 							try {
 								switch (channel.getType()) {
