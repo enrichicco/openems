@@ -7,13 +7,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.time.ZonedDateTime;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.Scanner;
+
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
@@ -39,8 +36,7 @@ import com.influxdb.client.write.Point;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.timedata.Resolution;
 import io.openems.common.types.ChannelAddress;
-import io.openems.common.types.EdgeConfig.Component.Channel;
-import io.openems.edge.common.channel.Doc;
+
 import io.openems.edge.common.component.AbstractOpenemsComponent;
 import io.openems.edge.common.component.ComponentManager;
 import io.openems.edge.common.component.OpenemsComponent;
@@ -153,6 +149,10 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 							Object value = valueOpt.get();
 							var address = channel.address().toString();
 							
+							/*
+							 *  Generate local file with all addresses written to InfuxDB
+							 *  added by YouPower AG for internal use
+							 */
 							try {
 								this.writeChannelToFile(address);
 							} catch (IOException e1) {
@@ -198,8 +198,13 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 		}
 	}
 	
+	/*
+	 *  Generate local file with all addresses written to InfuxDB
+	 *  added by YouPower AG for internal use
+	 */
 	public void writeChannelToFile(String address) throws IOException {
-			
+		
+		// Local file
 		var fileName = "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
 		
 		File localFile = new File(fileName);
@@ -210,16 +215,15 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 		boolean writeIt = true;
 		
 		while (line != null) {
-			if (line.contains(address))
+			if (line.contains(address)) // address value is present on file
 			{
 				writeIt = false;
 			}
-			// read next line
 			line = reader.readLine();
 		}
 		reader.close();
 		
-		if(writeIt)
+		if(writeIt) // address value isn't present on file
 		{
 			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 		    writer.append(address);
