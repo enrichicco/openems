@@ -23,13 +23,6 @@ import eu.chargetime.ocpp.model.core.AuthorizationStatus;
 
 public class DatabaseConnectionHandlerImpl {
 	
-	public static final String RFID_DEFAULT_API_ENDPOINT = "";
-	public static final String RFID_DEFAULT_DB_CONNECTION = "jdbc:postgresql://127.0.0.1:5432/yp_rfids?user=postgres&password=&ssl=false";
-	public static final String RFID_DEFAULT_DB_TABLE = "rfid";
-	public static final String RFID_DEFAULT_DB_FIELD = "rfid_uid";
-	public static final String RFID_DEFAULT_DB_FIELD_STATUS = "rfid_status";
-	public static final String RFID_DEFAULT_JSON_ABSOLUTE_PATH = "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/rfid_auth_list.json";
-	
 	public Config config;
 	
 	private final Logger log = LoggerFactory.getLogger(CoreEventHandlerImpl.class);

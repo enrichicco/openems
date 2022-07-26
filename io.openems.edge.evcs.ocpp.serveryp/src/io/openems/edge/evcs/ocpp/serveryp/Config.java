@@ -28,22 +28,22 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 	// RFID external databases for status management
 	@AttributeDefinition(name = "Rfid-DB API endpoint", description = "The database connection string for external RFID auth")
-	String rfid_api_endpoint() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_API_ENDPOINT;
+	String rfid_api_endpoint();
 	
 	@AttributeDefinition(name = "Rfid-DB database connection string", description = "The database connection string for external RFID auth")
-	String rfid_db_connection_string() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_CONNECTION;
+	String rfid_db_connection_string() default "jdbc:postgresql://127.0.0.1:5432/[your_table]?user=postgres&password=&ssl=false";
 	
 	@AttributeDefinition(name = "Rfid-DB table", description = "The table containing RFIDs")
-	String rfid_db_table() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_TABLE;
+	String rfid_db_table() default "rfid";
 	
 	@AttributeDefinition(name = "Rfid-DB table field for RFID-UID", description = "The field on table for RFIDs UID")
-	String rfid_db_field() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_FIELD;
+	String rfid_db_field() default "rfid_uid";
 	
 	@AttributeDefinition(name = "Rfid-DB table field for RFID status", description = "The field on table for RFIDs status")
-	String rfid_db_status_field() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_DB_FIELD_STATUS;
+	String rfid_db_status_field() default "rfid_status";
 	
 	@AttributeDefinition(name = "Rfid JSON file for RFID status", description = "The ABSOLUTE PATH (with filename.json) for for RFID status")
-	String rfid_json_path() default DatabaseConnectionHandlerImpl.RFID_DEFAULT_JSON_ABSOLUTE_PATH;
+	String rfid_json_path() default "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/rfid_auth_list.json";
 	
 	String webconsole_configurationFactory_nameHint() default "EVCS OCPP Server YP [{id}]";
 }
