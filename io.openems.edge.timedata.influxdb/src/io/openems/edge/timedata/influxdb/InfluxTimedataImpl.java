@@ -202,7 +202,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 	}
 	
 	/*
-	 *  Generate local file with all addresses written to InfuxDB
+	 *  Generate local file with all channels written to InfuxDB
 	 *  added by YouPower AG for internal use
 	 */
 	public void writeChannelToFile(String address) throws IOException {
@@ -218,7 +218,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 		boolean writeIt = true;
 		
 		while (line != null) {
-			if (line.contains(address)) // address value is present on file
+			if (line.contains(address)) // channel value is present on file
 			{
 				writeIt = false;
 			}
@@ -226,7 +226,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 		}
 		reader.close();
 		
-		if(writeIt) // address value isn't present on file
+		if(writeIt) // channel value isn't present on file
 		{
 			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 		    writer.append(address);
