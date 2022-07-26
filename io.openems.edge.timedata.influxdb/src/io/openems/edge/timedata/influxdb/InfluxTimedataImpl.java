@@ -153,11 +153,14 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 							 *  Generate local file with all addresses written to InfuxDB
 							 *  added by YouPower AG for internal use
 							 */
-							try {
-								this.writeChannelToFile(address);
-							} catch (IOException e1) {
-								e1.printStackTrace();
-							}
+							if(config.isFileKey())
+							{
+								try {
+									this.writeChannelToFile(address);
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								}
+							}	
 							
 							try {
 								switch (channel.getType()) {
@@ -205,7 +208,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 	public void writeChannelToFile(String address) throws IOException {
 		
 		// Local file
-		var fileName = "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
+		var fileName = config.fileKeyurl();
 		
 		File localFile = new File(fileName);
 		localFile.createNewFile(); // don't worry: if file exist do nothing!

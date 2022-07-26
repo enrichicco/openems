@@ -34,6 +34,12 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 	@AttributeDefinition(name = "Read-Only mode", description = "Activates the read-only mode. Then no data is written to InfluxDB.")
 	boolean isReadOnly() default false;
+	
+	@AttributeDefinition(name = "Write key value on text file", description = "Activate a function to save on text file all data keys written on InfluxDB")
+	boolean isFileKey() default false;
+	
+	@AttributeDefinition(name = "Text file URL", description = "The text file URL")
+	String fileKeyurl() default "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
 
 	String webconsole_configurationFactory_nameHint() default "Timedata InfluxDB [{id}]";
 }
