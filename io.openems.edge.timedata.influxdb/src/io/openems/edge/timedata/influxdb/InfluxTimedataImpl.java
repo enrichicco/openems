@@ -1,9 +1,15 @@
 package io.openems.edge.timedata.influxdb;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Optional;
@@ -146,12 +152,13 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 							}
 							Object value = valueOpt.get();
 							var address = channel.address().toString();
+							
 							try {
 								this.writeChannelToFile(address);
 							} catch (IOException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
+							
 							try {
 								switch (channel.getType()) {
 								case BOOLEAN:
@@ -191,28 +198,36 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 		}
 	}
 	
-	public void writeChannelToFile(String address) 
-			  throws IOException {
-			    var fileName = "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
-			    
-			    try (Scanner scanner = new Scanner(fileName)) {
-			    	scanner.useLocale(Locale.US);
-			    	while (scanner.hasNextLine()) {
-						String line = scanner.nextLine();
-						if(line.contains(address)) { 
-					        return;
-					    }
-						else
-						{
-							BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-						    writer.newLine();
-						    writer.append(address);
-						    writer.close();
-						}
-					}
-			    	scanner.close();
-				}
+	public void writeChannelToFile(String address) throws IOException {
+			
+		var fileName = "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
+		
+		File localFile = new File(fileName);
+		localFile.createNewFile(); // don't worry: if file exist do nothing!
+		
+		BufferedReader reader  = new BufferedReader(new FileReader(fileName));
+		String line = reader.readLine();
+		boolean writeIt = true;
+		
+		while (line != null) {
+			if (line.contains(address))
+			{
+				writeIt = false;
 			}
+			// read next line
+			line = reader.readLine();
+		}
+		reader.close();
+		
+		if(writeIt)
+		{
+			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+		    writer.append(address);
+		    writer.newLine();
+		    writer.close();
+		}	
+				
+	}
 
 	@Override
 	public SortedMap<ZonedDateTime, SortedMap<ChannelAddress, JsonElement>> queryHistoricData(String edgeId,
