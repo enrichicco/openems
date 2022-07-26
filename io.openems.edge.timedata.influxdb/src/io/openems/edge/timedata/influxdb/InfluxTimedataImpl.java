@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -195,7 +196,8 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 			    var fileName = "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/influx_written_channels.txt";
 			    
 			    try (Scanner scanner = new Scanner(fileName)) {
-					while (scanner.hasNextLine()) {
+			    	scanner.useLocale(Locale.US);
+			    	while (scanner.hasNextLine()) {
 						String line = scanner.nextLine();
 						if(line.contains(address)) { 
 					        return;
@@ -208,6 +210,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 						    writer.close();
 						}
 					}
+			    	scanner.close();
 				}
 			}
 
