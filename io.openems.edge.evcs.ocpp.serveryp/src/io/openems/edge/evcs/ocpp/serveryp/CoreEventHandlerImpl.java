@@ -41,9 +41,6 @@ import io.openems.edge.evcs.ocpp.common.AbstractOcppEvcsComponent;
 import io.openems.edge.evcs.ocpp.common.ChargingProperty;
 import io.openems.edge.evcs.ocpp.common.OcppInformations;
 
-
-import io.openems.edge.evcs.ocpp.serveryp.DatabaseConnectionHandlerImpl;
-
 public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 	
 	private final Logger log = LoggerFactory.getLogger(CoreEventHandlerImpl.class);
@@ -77,7 +74,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		this.logDebug("Handle AuthorizeRequest: " + request);
 		this.logDebug("[YP] RFID-ID: " + request.getIdTag());
 		
-		// var authStatus = AuthorizationStatus.Accepted;
+		// authStatus = AuthorizationStatus.Accepted;
 		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 
 		var tag = new IdTagInfo(authStatus);
@@ -338,7 +335,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 
 		this.logDebug("Handle StartTransactionRequest: " + request);
 		
-		// var authStatus = AuthorizationStatus.Accepted;
+		// authStatus = AuthorizationStatus.Accepted;
 		
 		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 		
@@ -374,7 +371,7 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 
 		this.logDebug("Handle StopTransactionRequest: " + request);
 		
-		// var authStatus = AuthorizationStatus.Accepted;
+		// authStatus = AuthorizationStatus.Accepted;
 		
 		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 
@@ -390,8 +387,6 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		}
 		evcs._setStatus(Status.CHARGING_FINISHED);
 		
-		// no if Accepted perché devo chiudere comunque la transazione anche se nel
-		// frattempo il tag è stato bloccato
 		this.logDebug("[YP] RFID-ID: " + request.getIdTag());
 		this.logDebug("[YP] Meter Stop: " + request.getMeterStop());
 		this.logDebug("[YP] Timestamp: " + request.getTimestamp());
