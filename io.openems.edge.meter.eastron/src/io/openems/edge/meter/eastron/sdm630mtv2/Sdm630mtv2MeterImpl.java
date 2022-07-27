@@ -25,9 +25,11 @@ import io.openems.edge.bridge.modbus.api.ModbusProtocol;
 import io.openems.edge.bridge.modbus.api.element.DummyRegisterElement;
 import io.openems.edge.bridge.modbus.api.element.FloatDoublewordElement;
 import io.openems.edge.bridge.modbus.api.element.FloatQuadruplewordElement;
+import io.openems.edge.bridge.modbus.api.element.SignedDoublewordElement;
 import io.openems.edge.bridge.modbus.api.task.FC3ReadRegistersTask;
 import io.openems.edge.common.channel.Doc;
 import io.openems.edge.common.channel.FloatReadChannel;
+import io.openems.edge.common.channel.IntegerReadChannel;
 import io.openems.edge.common.channel.LongReadChannel;
 import io.openems.edge.common.channel.value.Value;
 import io.openems.edge.common.component.OpenemsComponent;
@@ -103,20 +105,20 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		ModbusProtocol modbusProtocol = new ModbusProtocol(this);
 		
 		modbusProtocol.addTask(
-				new FC3ReadRegistersTask(0x2000, Priority.HIGH, //
+				new FC3ReadRegistersTask(0x7531, Priority.HIGH, //
 						
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL12, new FloatDoublewordElement(0x2000), 
+					    m(AsymmetricMeter.ChannelId.VOLTAGE_L1, new SignedDoublewordElement(0x7531), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL23, new FloatDoublewordElement(0x2002), 
+					    m(AsymmetricMeter.ChannelId.VOLTAGE_L2, new SignedDoublewordElement(0x7533), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL31, new FloatDoublewordElement(0x2004), 
+					    m(AsymmetricMeter.ChannelId.VOLTAGE_L3, new SignedDoublewordElement(0x7535), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
 						
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0x2006), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0x7537), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL2, new FloatDoublewordElement(0x2008), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL2, new FloatDoublewordElement(0x7539), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1),
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL3, new FloatDoublewordElement(0x200A), 
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL3, new FloatDoublewordElement(0x753B), 
 					    		ElementToChannelConverter.SCALE_FACTOR_MINUS_1)
 						
 /*				    m(MeterAlgo2UEM1P5_4DS_E.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0x1000), 
@@ -153,7 +155,7 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		//
 		//
 		theMessage.append("\n - V1, V2, V3 - ");
-		theMessage.append(this.getFVoltageFL1().asString() + " " + this.getFVoltageFL2().asString() + " " + this.getFVoltageFL3().asString());
+		theMessage.append(this.getFVoltageFL1().asString() + " " + this.getFVoltageFL1().asString() + " " + this.getFVoltageFL1().asString());
 		theMessage.append("\n - V12, V23, V31 - ");
 		theMessage.append(this.getFVoltageFL12().asString() + " " + this.getFVoltageFL23().asString() + " " + this.getFVoltageFL31().asString());
 		
@@ -167,6 +169,10 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 	
 	
 	// generic ChannelId get LongReadChannel
+	public IntegerReadChannel getIntGenericChannel(io.openems.edge.common.channel.ChannelId theChannel) {
+		return this.channel(theChannel);
+	}
+	// generic ChannelId get LongReadChannel
 	public LongReadChannel getLongGenericChannel(io.openems.edge.common.channel.ChannelId theChannel) {
 		return this.channel(theChannel);
 	}
@@ -175,6 +181,11 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 	public FloatReadChannel getFloatGenericChannel(io.openems.edge.common.channel.ChannelId theChannel) {
 		return this.channel(theChannel);
 	}
+	
+
+	
+	
+	
 	
 	public Value<Float> getFVoltageFL1() {
 		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL1).value();
