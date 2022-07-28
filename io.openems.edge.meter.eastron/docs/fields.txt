@@ -1,0 +1,21 @@
+30053	27 Total system power. Watts 00 34 √ √ √
+30057	29 Total system volt amps. VA 00 38 √ √ √
+30061	31 Total system VAr. VAr 00 3C √ √ √
+30063	32 Total system power factor (1). None 00 3E √ √ √
+30067	34 Total system phase angle. Degrees 00 42 √ √ √
+30071	36 Frequency of supply voltages. Hz 00 46 √ √ √
+30073 37 Import Wh since last reset (2). kWh/MWh 00 48 √ √ √
+30075 38 Export Wh since last reset (2). kWh/MWh 00 4A √ √ √
+30077 39 Import VArh since last reset (2). kVArh/MVArh 00 4C √ √ √
+30079 40 Export VArh since last reset (2). kVArh/MVArh 00 4E √ √ √
+30081 41 VAh since last reset (2). kVAh/MVAh 00 50 √ √ √
+30083 42 Ah since last reset (3). Ah/kAh 00 52 √ √ √
+30085 43 Total system power demand (4). Watts 00 54 √ √ √
+30087 44 Maximum total system power demand (4). Watts 00 56 √ √ √
+30101 51 Total system VA demand. VA 00 64 √ √ √
+30103 52 Maximum total system VA demand. VA 00 66 √ √ √
+30105 53 Neutral current demand. Amps 00 68 √ X X
+30107 54 Maximum neutral current demand. Amps 00 6A √ X X
+30201 101 Line 1 to Line 2 volts. Volts 00 C8 √ √ X
+30203 102 Line 2 to Line 3 volts. Volts 00 CA √ √ X
+30205 103 Line 3 to Line 1 volts. Volts 00 CC √ √ X
