@@ -191,7 +191,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 										  
 										  readerLocal.close();
 										  
-										// channel value is present on local file --> NOT write to InfluxDB
+										// channel value is NOT present on local file --> NOT write to InfluxDB
 									    if(notWriteAddress == false) 
 										  {
 											  this.logInfo(log, "NOT written to InfluxDB: " + address + "(jump address)");
@@ -204,7 +204,7 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 								}
 								else
 								{
-									// Local txt file not present: next value
+									// Local TXT file not present: next value
 									return;
 								}	
 							}
