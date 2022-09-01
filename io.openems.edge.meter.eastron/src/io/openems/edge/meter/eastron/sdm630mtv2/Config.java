@@ -7,7 +7,7 @@ import io.openems.edge.meter.api.MeterType;
 
 @ObjectClassDefinition(//
 		name = "Meter eastron sdm630mtv2", //
-		description = "")
+		description = "Implements the eastron sdm 630 mtv power analyser.")
 @interface Config {
 
 	@AttributeDefinition(name = "Component-ID", description = "Unique ID of this Component")

@@ -52,8 +52,8 @@ public class Chint6XXMeterImpl extends AbstractOpenemsModbusComponent
 	/*
 	 * Invert power values
 	 */
+	private Config config;
 	private boolean invert = false;
-	private Config config = null;
 
 	public Chint6XXMeterImpl() {
 		super(//
@@ -77,13 +77,13 @@ public class Chint6XXMeterImpl extends AbstractOpenemsModbusComponent
 	@Activate
 	void activate(ComponentContext context, Config config) throws OpenemsException {
 		this.meterType = config.type();
+		this.config = config;
 		this.invert = config.invert();
 
 		if (super.activate(context, config.id(), config.alias(), config.enabled(), config.modbusUnitId(), this.cm,
         "Modbus", config.modbus_id())) {
 			return;
 		}
-		
 	}
 
 	@Deactivate

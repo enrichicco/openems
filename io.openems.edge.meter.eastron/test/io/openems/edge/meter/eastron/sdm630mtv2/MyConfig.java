@@ -1,7 +1,7 @@
 package io.openems.edge.meter.eastron.sdm630mtv2;
 
 import io.openems.common.utils.ConfigUtils;
-import io.openems.edge.common.test.AbstractComponentConfig;
+import io.openems.common.test.AbstractComponentConfig;
 import io.openems.edge.meter.api.MeterType;
 
 @SuppressWarnings("all")

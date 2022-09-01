@@ -96,11 +96,6 @@ public class MeterAlgo2UEM1P5_4DS_EImpl extends AbstractOpenemsModbusComponent
 	private Config config;
 	private boolean invert = false;
 
-	@Reference
-	protected ConfigurationAdmin cm;
-
-	// private Config config = null;
-
 	public MeterAlgo2UEM1P5_4DS_EImpl() {
 		super(//
 				OpenemsComponent.ChannelId.values(), //
@@ -111,6 +106,10 @@ public class MeterAlgo2UEM1P5_4DS_EImpl extends AbstractOpenemsModbusComponent
 		);
 	}
 
+	@Reference
+	protected ConfigurationAdmin cm;
+	
+	@Override
 	@Reference(policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MANDATORY)
 	protected void setModbus(BridgeModbus modbus) {
 		super.setModbus(modbus);
@@ -123,7 +122,7 @@ public class MeterAlgo2UEM1P5_4DS_EImpl extends AbstractOpenemsModbusComponent
 		this.invert = config.invert();
 
 		if (super.activate(context, config.id(), config.alias(), config.enabled(), config.modbusUnitId(), this.cm,
-				"Modbus", config.modbus_id())) {
+        "Modbus", config.modbus_id())) {
 			return;
 		}
 	}

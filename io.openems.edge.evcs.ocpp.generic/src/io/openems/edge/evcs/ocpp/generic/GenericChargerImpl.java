@@ -37,6 +37,7 @@ import io.openems.edge.evcs.ocpp.common.AbstractOcppEvcsComponent;
 import io.openems.edge.evcs.ocpp.common.OcppInformations;
 import io.openems.edge.evcs.ocpp.common.OcppProfileType;
 import io.openems.edge.evcs.ocpp.common.OcppStandardRequests;
+import io.openems.edge.timedata.api.Timedata;
 
 
 @Designate(ocd = Config.class, factory = true)
@@ -281,5 +282,11 @@ public class GenericChargerImpl extends AbstractOcppEvcsComponent
 
 	public String debugLog() {
 		return "Hi, I'm a debug log row";
+	}
+
+	@Override
+	public Timedata getTimedata() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

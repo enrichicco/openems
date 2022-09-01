@@ -26,16 +26,6 @@ public interface Chint6XXMeter extends OpenemsComponent {
 
 	public enum ChannelId implements io.openems.edge.common.channel.ChannelId {
 
-		VOLTAGE_FL12(Doc.of(OpenemsType.FLOAT) //
-				.unit(Unit.VOLT) //
-				.persistencePriority(PersistencePriority.HIGH)),
-		VOLTAGE_FL23(Doc.of(OpenemsType.FLOAT) //
-				.unit(Unit.VOLT) //
-				.persistencePriority(PersistencePriority.HIGH)),
-		VOLTAGE_FL31(Doc.of(OpenemsType.FLOAT) //
-				.unit(Unit.VOLT) //
-				.persistencePriority(PersistencePriority.HIGH)),
-		
 		VOLTAGE_FL1(Doc.of(OpenemsType.FLOAT) //
 				.unit(Unit.VOLT) //
 				.persistencePriority(PersistencePriority.HIGH)),
@@ -43,6 +33,17 @@ public interface Chint6XXMeter extends OpenemsComponent {
 				.unit(Unit.VOLT) //
 				.persistencePriority(PersistencePriority.HIGH)),
 		VOLTAGE_FL3(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.VOLT) //
+				.persistencePriority(PersistencePriority.HIGH)),
+		
+
+		VOLTAGE_FL12(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.VOLT) //
+				.persistencePriority(PersistencePriority.HIGH)),
+		VOLTAGE_FL23(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.VOLT) //
+				.persistencePriority(PersistencePriority.HIGH)),
+		VOLTAGE_FL31(Doc.of(OpenemsType.FLOAT) //
 				.unit(Unit.VOLT) //
 				.persistencePriority(PersistencePriority.HIGH)),
 		

@@ -89,6 +89,7 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		
 	}
 
+	@Override
 	@Deactivate
 	protected void deactivate() {
 		super.deactivate();
@@ -101,7 +102,6 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 
 	@Override
 	protected ModbusProtocol defineModbusProtocol() throws OpenemsException {
-		// TODO implement ModbusProtocol
 		
 		ModbusProtocol modbusProtocol = new ModbusProtocol(this);
 		

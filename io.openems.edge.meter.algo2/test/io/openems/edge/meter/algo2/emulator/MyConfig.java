@@ -1,6 +1,6 @@
 package io.openems.edge.meter.algo2.emulator;
 
-import io.openems.edge.common.test.AbstractComponentConfig;
+import io.openems.common.test.AbstractComponentConfig;
 import io.openems.common.utils.ConfigUtils;
 import io.openems.edge.meter.api.MeterType;
 //import io.openems.edge.meter.algo2.emulator.Config;
