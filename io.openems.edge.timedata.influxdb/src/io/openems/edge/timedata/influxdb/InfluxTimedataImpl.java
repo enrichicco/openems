@@ -1,18 +1,8 @@
 package io.openems.edge.timedata.influxdb;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.Optional;
-
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +28,6 @@ import com.influxdb.client.write.Point;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.timedata.Resolution;
 import io.openems.common.types.ChannelAddress;
-
 import io.openems.edge.common.component.AbstractOpenemsComponent;
 import io.openems.edge.common.component.ComponentManager;
 import io.openems.edge.common.component.OpenemsComponent;
@@ -96,7 +85,6 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 				config.bucket(), config.isReadOnly(), //
 				(throwable) -> {
 					this.logError(this.log, "Unable to write to InfluxDB: " + throwable.getMessage());
-					return false; // do not retry
 				});
 	}
 
@@ -133,7 +121,6 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 			this.componentManager.getEnabledComponents().stream().filter(OpenemsComponent::isEnabled)
 					.forEach(component -> {
 						component.channels().forEach(channel -> {
-							
 							switch (channel.channelDoc().getAccessMode()) {
 							case WRITE_ONLY:
 								// ignore Write-Only-Channels
@@ -150,65 +137,6 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 							}
 							Object value = valueOpt.get();
 							var address = channel.address().toString();
-							
-							/*
-							 *  Generate local file with all addresses written to InfuxDB
-							 *  added by YouPower AG for internal use
-							 */
-							if(config.isFileKey())
-							{
-								try {
-									this.writeChannelToFile(address);
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-							}
-							/*
-							 *  Write to InfuxDB only addresses present on local TXT file
-							 *  added by YouPower AG for internal use
-							 */
-							if(config.isOnlyOnFile())
-							{
-								var keysFileName = config.fileKeyValidurl();
-								Path path = Paths.get(keysFileName);
-								if(Files.exists(path) && !Files.isDirectory(path)) {
-								      
-								      try {
-										BufferedReader readerLocal  = new BufferedReader(new FileReader(keysFileName));
-										  String lineLocal = readerLocal.readLine();
-										  boolean notWriteAddress = false;
-										  
-										  while (lineLocal != null) {
-											 // channel value is present on local file --> write to InfluxDB
-											 if (lineLocal.contains(address))
-											 {
-										    	 notWriteAddress = true;
-										    	 this.logInfo(log, "Written to InfluxDB: " + address);
-										    	 
-											 }
-											 lineLocal = readerLocal.readLine();
-										  }
-										  
-										  readerLocal.close();
-										  
-										// channel value is NOT present on local file --> NOT write to InfluxDB
-									    if(notWriteAddress == false) 
-										  {
-											  this.logInfo(log, "NOT written to InfluxDB: " + address + "(jump address)");
-											  return;
-										  }
-									} catch (IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								}
-								else
-								{
-									// Local TXT file not present: next value
-									return;
-								}	
-							}
-							
 							try {
 								switch (channel.getType()) {
 								case BOOLEAN:
@@ -246,41 +174,6 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 				this.influxConnector.write(point);
 			}
 		}
-	}
-	
-	/*
-	 *  Generate local file with all channels written to InfuxDB
-	 *  added by YouPower AG for internal use
-	 */
-	public void writeChannelToFile(String address) throws IOException {
-		
-		// Local file
-		var fileName = config.fileKeyurl();
-		
-		File localFile = new File(fileName);
-		localFile.createNewFile(); // don't worry: if file exist do nothing!
-		
-		BufferedReader reader  = new BufferedReader(new FileReader(fileName));
-		String line = reader.readLine();
-		boolean writeIt = true;
-		
-		while (line != null) {
-			if (line.contains(address)) // channel value is present on file
-			{
-				writeIt = false;
-			}
-			line = reader.readLine();
-		}
-		reader.close();
-		
-		if(writeIt) // channel value isn't present on file
-		{
-			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-		    writer.append(address);
-		    writer.newLine();
-		    writer.close();
-		}	
-				
 	}
 
 	@Override
