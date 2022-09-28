@@ -175,6 +175,7 @@ public class MeterAlgo2UEM1P5_4DS_EImpl extends AbstractOpenemsModbusComponent
 				)
 			);		
 		}
+		
 		if (readEnablerMask.indexOf("[AFloat]") >= 0) {
 			modbusProtocol.addTask(
 				new FC3ReadRegistersTask(0x100E, Priority.HIGH, //

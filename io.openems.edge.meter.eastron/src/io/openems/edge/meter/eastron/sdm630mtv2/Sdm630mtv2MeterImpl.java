@@ -16,7 +16,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.metatype.annotations.Designate;
 
 import io.openems.common.channel.AccessMode;
+import io.openems.common.channel.PersistencePriority;
+import io.openems.common.channel.Unit;
 import io.openems.common.exceptions.OpenemsException;
+import io.openems.common.types.OpenemsType;
 import io.openems.edge.bridge.modbus.api.AbstractOpenemsModbusComponent;
 import io.openems.edge.bridge.modbus.api.BridgeModbus;
 import io.openems.edge.bridge.modbus.api.ElementToChannelConverter;
@@ -52,6 +55,29 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 
 	private MeterType meterType = MeterType.PRODUCTION;
 
+	public String readEnablerMask =	
+			"[VFloat]"
+			+ "[AFloat]"
+			+ "[PFactorFloat]" 
+			+ "[PActiveFloat]" 
+			+ "[PApparentFloat]" 
+			+ "[PReactiveFloat]"
+			+ "[FreqPhSeqFloat]"
+			+ "[EImportExportActiveFloat]"
+			
+			
+
+	// olds ...
+//			+ "[CEnActProd]" 
+//			+ "[CEnActCons]" 
+//			+ "[PAct]"
+			// + "[AAlt]"
+			// + "[A]"
+			//+ "[VCross]"
+			//+ "[V]"
+			;
+			
+	
 	/*
 	 * Invert power values
 	 */
@@ -105,25 +131,59 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		
 		ModbusProtocol modbusProtocol = new ModbusProtocol(this);
 		
+		if (readEnablerMask.indexOf("[VFloat]") >= 0) {
+			modbusProtocol.addTask(
+				new FC4ReadInputRegistersTask(/*0x7531*/ 0, Priority.HIGH, //
+				    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL2, new FloatDoublewordElement(2), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL3, new FloatDoublewordElement(4), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1) /*,
+					m(MeterAlgo2UEM1P5_4DS_E.ChannelId.VOLTAGE_FSYS, new FloatDoublewordElement(0x100C),
+						    ElementToChannelConverter.DIRECT_1_TO_1) */
+				)
+			);		
+			modbusProtocol.addTask(
+					new FC4ReadInputRegistersTask(/*0x7531*/ 0xc8, Priority.HIGH, //
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL12, new FloatDoublewordElement(0xc8), 
+					    		ElementToChannelConverter.DIRECT_1_TO_1),
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL23, new FloatDoublewordElement(0xca), 
+					    		ElementToChannelConverter.DIRECT_1_TO_1),
+					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL31, new FloatDoublewordElement(0xcc), 
+					    		ElementToChannelConverter.DIRECT_1_TO_1) /*,
+						m(MeterAlgo2UEM1P5_4DS_E.ChannelId.VOLTAGE_FSYS, new FloatDoublewordElement(0x100C),
+							    ElementToChannelConverter.DIRECT_1_TO_1) */
+					    
+					)
+				);		
+		}
+		
+		
+		if (readEnablerMask.indexOf("[AFloat]") >= 0) {
+			modbusProtocol.addTask(
+				// new FC3ReadRegistersTask(/*0x7531*/ 0, Priority.HIGH, //
+				new FC4ReadInputRegistersTask(/*0x7531*/ 6, Priority.HIGH, //
+					
+				    m(Sdm630mtv2Meter.ChannelId.CURRENT_FA1, new FloatDoublewordElement(6), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.CURRENT_FA2, new FloatDoublewordElement(8), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.CURRENT_FA3, new FloatDoublewordElement(10), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1) /*,
+					m(MeterAlgo2UEM1P5_4DS_E.ChannelId.CURRENT_FN, new FloatDoublewordElement(0x1014),
+						    ElementToChannelConverter.DIRECT_1_TO_1),
+					m(MeterAlgo2UEM1P5_4DS_E.ChannelId.CURRENT_FSYS, new FloatDoublewordElement(0x1016),
+						    ElementToChannelConverter.DIRECT_1_TO_1) // ,
+					*/
+				)
+			);			
+		};
+		
 		modbusProtocol.addTask(
 			// new FC3ReadRegistersTask(/*0x7531*/ 0, Priority.HIGH, //
-			new FC4ReadInputRegistersTask(/*0x7531*/ 0, Priority.HIGH, //
+			new FC4ReadInputRegistersTask(/*0x7531*/ 12, Priority.HIGH, //
 				
-				
-			    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL1, new FloatDoublewordElement(0), 
-			    		ElementToChannelConverter.DIRECT_1_TO_1),
-			    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL2, new FloatDoublewordElement(2), 
-			    		ElementToChannelConverter.DIRECT_1_TO_1),
-			    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL3, new FloatDoublewordElement(4), 
-			    		ElementToChannelConverter.DIRECT_1_TO_1),
-				
-			    m(Sdm630mtv2Meter.ChannelId.AMPERE_FL1, new FloatDoublewordElement(6), 
-			    		ElementToChannelConverter.DIRECT_1_TO_1),
-			    m(Sdm630mtv2Meter.ChannelId.AMPERE_FL2, new FloatDoublewordElement(8), 
-			    		ElementToChannelConverter.DIRECT_1_TO_1),
-			    m(Sdm630mtv2Meter.ChannelId.AMPERE_FL3, new FloatDoublewordElement(10), 
-			    		ElementToChannelConverter.DIRECT_1_TO_1),
-					
 			    m(Sdm630mtv2Meter.ChannelId.POWER_FL1, new FloatDoublewordElement(12), 
 			    		ElementToChannelConverter.DIRECT_1_TO_1),
 			    m(Sdm630mtv2Meter.ChannelId.POWER_FL2, new FloatDoublewordElement(14), 
@@ -203,6 +263,8 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		//
 		theMessage.append("\n - V1, V2, V3 - ");
 		theMessage.append(this.getFVoltageFL1().asString() + " " + this.getFVoltageFL2().asString() + " " + this.getFVoltageFL3().asString());
+		theMessage.append("\n - V12, V23, V31 - ");
+		theMessage.append(this.getFVoltageFL12().asString() + " " + this.getFVoltageFL23().asString() + " " + this.getFVoltageFL31().asString());
 		theMessage.append("\n - A1, A2, A3 - ");
 		theMessage.append(this.getFAmpereFL1().asString() + " " + this.getFAmpereFL2().asString() + " " + this.getFAmpereFL3().asString());
 		theMessage.append("\n - P1, P2, P3 - ");
@@ -262,16 +324,28 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL3).value();
 	}
 	
+	public Value<Float> getFVoltageFL12() {
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL12).value();
+	}
+	
+	public Value<Float> getFVoltageFL23() {
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL23).value();
+	}
+	
+	public Value<Float> getFVoltageFL31() {
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL31).value();
+	}
+	
 	public Value<Float> getFAmpereFL1() {
-		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.AMPERE_FL1).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.CURRENT_FA1).value();
 	}
 	
 	public Value<Float> getFAmpereFL2() {
-		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.AMPERE_FL2).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.CURRENT_FA2).value();
 	}
 	
 	public Value<Float> getFAmpereFL3() {
-		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.AMPERE_FL3).value();
+		return this.getFloatGenericChannel(Sdm630mtv2Meter.ChannelId.CURRENT_FA3).value();
 	}
 
 	public Value<Float> getFPowerFL1() {

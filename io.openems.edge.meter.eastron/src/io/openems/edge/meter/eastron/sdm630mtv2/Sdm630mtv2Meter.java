@@ -38,13 +38,13 @@ public interface Sdm630mtv2Meter extends OpenemsComponent {
 				.unit(Unit.VOLT) //
 				.persistencePriority(PersistencePriority.HIGH)),
 
-		AMPERE_FL1(Doc.of(OpenemsType.FLOAT) //
+		CURRENT_FA1(Doc.of(OpenemsType.FLOAT) //
 				.unit(Unit.AMPERE) //
 				.persistencePriority(PersistencePriority.HIGH)),
-		AMPERE_FL2(Doc.of(OpenemsType.FLOAT) //
+		CURRENT_FA2(Doc.of(OpenemsType.FLOAT) //
 				.unit(Unit.AMPERE) //
 				.persistencePriority(PersistencePriority.HIGH)),
-		AMPERE_FL3(Doc.of(OpenemsType.FLOAT) //
+		CURRENT_FA3(Doc.of(OpenemsType.FLOAT) //
 				.unit(Unit.AMPERE) //
 				.persistencePriority(PersistencePriority.HIGH)),
 
