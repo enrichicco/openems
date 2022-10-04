@@ -94,7 +94,6 @@ public class InfluxTimedataImpl extends AbstractOpenemsComponent
 				config.bucket(), config.isReadOnly(), //
 				(throwable) -> {
 					this.logError(this.log, "Unable to write to InfluxDB: " + throwable.getMessage());
-					return false; // do not retry
 				});
 	}
 

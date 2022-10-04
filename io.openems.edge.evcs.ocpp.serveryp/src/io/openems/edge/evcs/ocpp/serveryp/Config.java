@@ -31,7 +31,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	String rfid_api_endpoint();
 	
 	@AttributeDefinition(name = "Rfid-DB database connection string", description = "The database connection string for external RFID auth")
-	String rfid_db_connection_string() default "jdbc:postgresql://127.0.0.1:5432/[your_table]?user=postgres&password=&ssl=false";
+	String rfid_db_connection_string() default "jdbc:postgresql://127.0.0.1:5432/[your_database]?user=postgres&password=&ssl=false";
 	
 	@AttributeDefinition(name = "Rfid-DB table", description = "The table containing RFIDs")
 	String rfid_db_table() default "rfid";
@@ -43,7 +43,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	String rfid_db_status_field() default "rfid_status";
 	
 	@AttributeDefinition(name = "Rfid JSON file for RFID status", description = "The ABSOLUTE PATH (with filename.json) for for RFID status")
-	String rfid_json_path() default "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/rfid_auth_list.json";
+	String rfid_json_path() default  "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/rfid_auth_list.json";
 	
 	String webconsole_configurationFactory_nameHint() default "EVCS OCPP Server YP [{id}]";
 }
