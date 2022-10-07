@@ -60,6 +60,10 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 			BootNotificationRequest request) {
 
 		this.logDebug("Handle BootNotificationRequest: " + request);
+		
+		// TODO: dobbiamo verificare se la stazione è accettata
+		// questi gli stati possibili: Accepted, Pending, Rejected
+		// va fatto? Se si come va implementato?
 
 		var response = new BootNotificationConfirmation(Instant.now().atZone(ZoneOffset.UTC), 100,
 				RegistrationStatus.Accepted);
@@ -74,7 +78,14 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		this.logDebug("Handle AuthorizeRequest: " + request);
 		this.logDebug("[YP] RFID-ID: " + request.getIdTag());
 		
-		// authStatus = AuthorizationStatus.Accepted;
+		/*
+		 *  Available statuses, retrieved from DatabaseConnectionHandlerImpl Class
+		 *  Accepted
+		 *  Blocked
+		 *  Expired
+		 *  Invalid
+		 *  ConcurrentTx
+		 */
 		var authStatus = this.dbapi.CheckIdTag(request.getIdTag());
 
 		var tag = new IdTagInfo(authStatus);
