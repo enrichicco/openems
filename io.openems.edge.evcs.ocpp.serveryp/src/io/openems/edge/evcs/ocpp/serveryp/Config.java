@@ -45,5 +45,17 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Rfid JSON file for RFID status", description = "The ABSOLUTE PATH (with filename.json) for for RFID status")
 	String rfid_json_path() default  "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/rfid_auth_list.json";
 	
+	@AttributeDefinition(name = "Evcs-DB table", description = "The table containing EVCSs")
+	String evcs_db_table() default "evcs";
+	
+	@AttributeDefinition(name = "Evcs-DB table field for Evcs-UID", description = "The field on table for EVCSs UID")
+	String evcs_db_field() default "evcs_uid";
+	
+	@AttributeDefinition(name = "Evcs-DB table field for EVCS status", description = "The field on table for EVCSs status")
+	String evcs_db_status_field() default "evcs_status";
+	
+	@AttributeDefinition(name = "Evcs JSON file for EVCS status", description = "The ABSOLUTE PATH (with filename.json) for for EVCS status")
+	String evcs_json_path() default  "/Users/gpoletto/Sites/eclipse_workspaces/openems_org/var/lib/openems/evcs_auth_list.json";
+	
 	String webconsole_configurationFactory_nameHint() default "EVCS OCPP Server YP [{id}]";
 }

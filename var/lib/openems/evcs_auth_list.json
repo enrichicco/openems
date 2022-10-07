@@ -1,0 +1,4 @@
+[
+  { "evcs_uid": "YP-001", "rfid_status": "Accepted" },
+  { "evcs_uid": "YP-002", "rfid_status": "Rejected" }
+]

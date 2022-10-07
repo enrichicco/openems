@@ -15,8 +15,15 @@ import com.google.gson.JsonObject;
 import io.openems.common.exceptions.OpenemsError.OpenemsNamedException;
 import io.openems.common.session.Language;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 public class AppManagerUtilImpl implements AppManagerUtil {
+
+	
+	
+	private final Logger log = LoggerFactory.getLogger(AppManagerUtilImpl.class);
 
 	@Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
 	private volatile AppManager appManager;
@@ -27,7 +34,13 @@ public class AppManagerUtilImpl implements AppManagerUtil {
 
 	@Override
 	public OpenemsApp getAppById(String appId) throws NoSuchElementException {
-		return this.getAppManagerImpl().findAppById(appId);
+		try{
+			return this.getAppManagerImpl().findAppById(appId);
+			
+		} catch (Exception err) {
+			logDebug(err.toString());
+			return null;
+		}
 	}
 
 	@Override
@@ -60,5 +73,10 @@ public class AppManagerUtilImpl implements AppManagerUtil {
 	private final AppManagerImpl getAppManagerImpl() {
 		return (AppManagerImpl) this.appManager;
 	}
+	
+	private void logDebug(String message) {
+		this.log.debug(message);
+	}
+
 
 }

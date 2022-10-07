@@ -63,10 +63,15 @@ public class CoreEventHandlerImpl implements ServerCoreEventHandler {
 		
 		// TODO: dobbiamo verificare se la stazione è accettata
 		// questi gli stati possibili: Accepted, Pending, Rejected
-		// va fatto? Se si come va implementato?
+		// va fatto? Se si come va implementato
+		
+		this.logDebug("EVCS serial number: " + request.getChargePointSerialNumber());
+		
+		var getStatus = this.dbapi.CheckIdEvcs(request.getChargePointSerialNumber());
 
 		var response = new BootNotificationConfirmation(Instant.now().atZone(ZoneOffset.UTC), 100,
-				RegistrationStatus.Accepted);
+				getStatus);
+		
 		this.logDebug("Send BootNotificationConfirmation: " + response.toString());
 
 		return response;

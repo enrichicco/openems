@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import eu.chargetime.ocpp.model.core.AuthorizationStatus;
+import eu.chargetime.ocpp.model.core.RegistrationStatus;
 
 public class DatabaseConnectionHandlerImpl {
 	
@@ -76,7 +77,7 @@ public class DatabaseConnectionHandlerImpl {
 				this.logDebug("[YP] Database connection fault: " + e.getMessage());
 				this.logDebug("[YP] Reading local Rfid list");
 				
-				returned_status = this.searchJsonFile(idTag);
+				returned_status = this.searchRfidJsonFile(idTag);
 			}
 		}
 		else
@@ -110,13 +111,13 @@ public class DatabaseConnectionHandlerImpl {
 	}
 	
 	/**
-	 * Read local JSON file to receive Rfid status.
+	 * Read local RFID JSON file to receive Rfid status.
 	 *
 	 * @param idTag Rfid UID
 	 * @return Rfid status
 	 */
 	@SuppressWarnings("finally")
-	public String searchJsonFile(String idTag) {
+	public String searchRfidJsonFile(String idTag) {
 	    
 		String gsonStatus = "Invalid";
 		
@@ -158,6 +159,19 @@ public class DatabaseConnectionHandlerImpl {
 			return gsonStatus;
 		}
 	}
+	
+	/**
+	 * Connect to external DB to receive EVCS status.
+	 *
+	 * @param evcsUid EVCS UID
+	 * @return EVCS status
+	 */
+	public RegistrationStatus CheckIdEvcs(String evcsUid) {
+		RegistrationStatus status = RegistrationStatus.Accepted;
+		
+		return status;
+	}
+	
 
 	private void logDebug(String message) {
 		if(this.config.debugMode())
