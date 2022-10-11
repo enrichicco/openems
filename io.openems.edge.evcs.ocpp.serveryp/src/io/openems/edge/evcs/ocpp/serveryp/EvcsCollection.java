@@ -1,11 +1,6 @@
 package io.openems.edge.evcs.ocpp.serveryp;
 
 public class EvcsCollection {
-
-	/*
-	 *  EVCS unique name (internal for YouPower)
-	 */
-	String evcs_uid;
 	
 	/*
 	 *  EVCS serial number (max 25)
