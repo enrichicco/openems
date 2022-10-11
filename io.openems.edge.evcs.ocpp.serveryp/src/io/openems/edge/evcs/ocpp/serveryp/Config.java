@@ -51,6 +51,9 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 	@AttributeDefinition(name = "Evcs-DB table field for Evcs-UID", description = "The field on table for EVCSs UID")
 	String evcs_db_field() default "evcs_uid";
 	
+	@AttributeDefinition(name = "Evcs-DB table field for Evcs-Serial-Number", description = "The field on table for EVCSs Serial number")
+	String evcs_db_serial_field() default "evcs_uid";
+	
 	@AttributeDefinition(name = "Evcs-DB table field for EVCS status", description = "The field on table for EVCSs status")
 	String evcs_db_status_field() default "evcs_status";
 	

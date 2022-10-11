@@ -166,10 +166,122 @@ public class DatabaseConnectionHandlerImpl {
 	 * @param evcsUid EVCS UID
 	 * @return EVCS status
 	 */
-	public RegistrationStatus CheckIdEvcs(String evcsUid) {
-		RegistrationStatus status = RegistrationStatus.Accepted;
+	public RegistrationStatus CheckIdEvcs(String evcsSerial) {
+		RegistrationStatus status = RegistrationStatus.Rejected;
 		
-		return status;
+		String returned_status = "";
+		String evcsUid = "";
+		String db_url = this.config.rfid_db_connection_string();
+		
+		// TODO: API connection
+				// String api_endpoint = this.config.rfid_api_endpoint();
+				
+				// 1 - try connecting database
+				if(db_url != "")
+				{
+					try {
+						Connection conn = null;
+						
+						// Explicit driver for PostgreSQL (only)
+						if(db_url.contains("postgresql"))
+						{
+							Class.forName("org.postgresql.Driver");	
+						}
+						conn = DriverManager.getConnection(db_url);
+						PreparedStatement st = conn.prepareStatement("SELECT * FROM " + this.config.evcs_db_table() + " WHERE " + this.config.evcs_db_serial_field() + " = ?");
+						st.setString(1, evcsSerial);
+						ResultSet rs = st.executeQuery();
+						if (rs.next())
+						{
+							returned_status = rs.getString(this.config.evcs_db_status_field());
+							evcsUid = rs.getString(this.config.evcs_db_field());
+						}
+						rs.close();
+						st.close();
+						
+					} catch (SQLException | ClassNotFoundException e) {
+						
+						// 2 - database connection fault: try reading local JSON file
+						this.logDebug("[YP] Database connection fault: " + e.getMessage());
+						this.logDebug("[YP] Reading local EVCS list");
+						
+						returned_status = this.searchEvcsJsonFile(evcsUid);
+					}
+				}
+				else
+				{
+					// TODO: API connection
+				}
+		
+				switch(returned_status) {
+				case "Accepted":
+					status = RegistrationStatus.Accepted;
+					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Accepted");
+					break;
+				case "Blocked":
+					status = RegistrationStatus.Pending;
+					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Pending");
+					break;
+				case "Expired":
+					status = RegistrationStatus.Rejected;
+					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Rejected");
+					break;
+				default:
+					status = RegistrationStatus.Rejected;
+					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Rejected");
+				}
+				
+				return status;
+	}
+	
+	/**
+	 * Read local EVCS JSON file to receive Rfid status.
+	 *
+	 * @param evcsUid EVCS UID
+	 * @return EVCS status
+	 */
+	@SuppressWarnings("finally")
+	public String searchEvcsJsonFile(String evcsUid) {
+	    
+		String gsonStatus = "Rejected";
+		
+		String db_field = this.config.evcs_db_field(); 				
+		String db_status = this.config.evcs_db_status_field(); 
+	    
+	    this.logDebug("[YP] EVCS searched on Json: " + evcsUid);
+	    
+	    try {
+	    	
+			String filepath = this.config.evcs_json_path();
+	    	Gson gson = new Gson();
+	    	Reader reader = Files.newBufferedReader(Paths.get(filepath));
+	    	
+	    	List<HashMap<String,String>> MrfidArray = gson.fromJson(reader, new TypeToken<List<HashMap<String,String>>>(){}.getType());
+	    	
+	    	List<HashMap<String, String>> rFids = MrfidArray.stream()
+												.filter(p -> p.get(db_field).equals(evcsUid))
+												.collect(Collectors.toList());
+	    	
+	    	if(rFids.size() == 1)
+	    	{
+	    		for(HashMap<String, String> p : rFids) {
+		    		gsonStatus = p.get(db_status);
+	    		}
+	    	}
+	    	else
+	    	{
+	    		this.logDebug("[YP] Reading local list fault, EVCS searched on Json: " + evcsUid + "not found of rfid.size > 1" );
+	    		gsonStatus = "Rejected";
+	    	}	
+	    		
+	    	reader.close();
+	    	
+	    } catch (Exception e) {
+	    	this.logDebug("[YP] Reading local list fault: " + e.getMessage());
+	    }
+		finally {
+			return gsonStatus;
+		}
 	}
 	
 
