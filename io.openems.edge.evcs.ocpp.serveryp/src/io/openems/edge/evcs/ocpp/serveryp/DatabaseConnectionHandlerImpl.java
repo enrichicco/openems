@@ -170,7 +170,6 @@ public class DatabaseConnectionHandlerImpl {
 		RegistrationStatus status = RegistrationStatus.Rejected;
 		
 		String returned_status = "";
-		String evcsUid = "";
 		String db_url = this.config.rfid_db_connection_string();
 		
 		// TODO: API connection
@@ -194,7 +193,6 @@ public class DatabaseConnectionHandlerImpl {
 						if (rs.next())
 						{
 							returned_status = rs.getString(this.config.evcs_db_status_field());
-							evcsUid = rs.getString(this.config.evcs_db_field());
 						}
 						rs.close();
 						st.close();
@@ -205,7 +203,7 @@ public class DatabaseConnectionHandlerImpl {
 						this.logDebug("[YP] Database connection fault: " + e.getMessage());
 						this.logDebug("[YP] Reading local EVCS list");
 						
-						returned_status = this.searchEvcsJsonFile(evcsUid);
+						returned_status = this.searchEvcsJsonFile(evcsSerial);
 					}
 				}
 				else
@@ -216,19 +214,19 @@ public class DatabaseConnectionHandlerImpl {
 				switch(returned_status) {
 				case "Accepted":
 					status = RegistrationStatus.Accepted;
-					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Accepted");
+					this.logDebug("[[YP] EVCS Serial: " + evcsSerial + "/ Accepted");
 					break;
 				case "Blocked":
 					status = RegistrationStatus.Pending;
-					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Pending");
+					this.logDebug("[[YP] EVCS Serial: " + evcsSerial + "/ Pending");
 					break;
 				case "Expired":
 					status = RegistrationStatus.Rejected;
-					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Rejected");
+					this.logDebug("[[YP] EVCS Serial: " + evcsSerial + "/ Rejected");
 					break;
 				default:
 					status = RegistrationStatus.Rejected;
-					this.logDebug("[[YP] EVCS ID: " + evcsUid + " EVCS Serial: " + evcsSerial + "/ Rejected");
+					this.logDebug("[[YP] EVCS Serial: " + evcsSerial + "/ Rejected");
 				}
 				
 				return status;
@@ -241,14 +239,14 @@ public class DatabaseConnectionHandlerImpl {
 	 * @return EVCS status
 	 */
 	@SuppressWarnings("finally")
-	public String searchEvcsJsonFile(String evcsUid) {
+	public String searchEvcsJsonFile(String evcsSerial) {
 	    
 		String gsonStatus = "Rejected";
 		
-		String db_field = this.config.evcs_db_field(); 				
+		String db_field = this.config.evcs_db_serial_field(); 				
 		String db_status = this.config.evcs_db_status_field(); 
 	    
-	    this.logDebug("[YP] EVCS searched on Json: " + evcsUid);
+	    this.logDebug("[YP] EVCS searched on Json: " + evcsSerial);
 	    
 	    try {
 	    	
@@ -259,7 +257,7 @@ public class DatabaseConnectionHandlerImpl {
 	    	List<HashMap<String,String>> MrfidArray = gson.fromJson(reader, new TypeToken<List<HashMap<String,String>>>(){}.getType());
 	    	
 	    	List<HashMap<String, String>> rFids = MrfidArray.stream()
-												.filter(p -> p.get(db_field).equals(evcsUid))
+												.filter(p -> p.get(db_field).equals(evcsSerial))
 												.collect(Collectors.toList());
 	    	
 	    	if(rFids.size() == 1)
@@ -270,7 +268,7 @@ public class DatabaseConnectionHandlerImpl {
 	    	}
 	    	else
 	    	{
-	    		this.logDebug("[YP] Reading local list fault, EVCS searched on Json: " + evcsUid + "not found of rfid.size > 1" );
+	    		this.logDebug("[YP] Reading local list fault, EVCS searched on Json: " + evcsSerial + "not found of rfid.size > 1" );
 	    		gsonStatus = "Rejected";
 	    	}	
 	    		

@@ -24,8 +24,8 @@ public class EvcsCollection {
 	/*
 	 *  JSON file structure:
 	 *  [
-	 *	  { "evcs_uid": "YP_Test_001", "evcs_status": "Accepted" },
-	 *	  { "evcs_uid": "YP_Test_002", "evcs_status": "Rejected" }
+	 *	  { "evcs_serial": "ray-032302579530773700", "evcs_status": "Accepted" },
+	 *	  { "evcs_serial": "", "evcs_status": "Rejected" }
 	 *	]
      *
 	 */

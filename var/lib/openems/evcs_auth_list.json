@@ -1,4 +1,4 @@
 [
-  { "evcs_uid": "YP-001", "rfid_status": "Accepted" },
-  { "evcs_uid": "YP-002", "rfid_status": "Rejected" }
+  { "evcs_serial": "ray-032302579530773700", "evcs_status": "Accepted" },
+  { "evcs_serial": "", "evcs_status": "Rejected" }
 ]
