@@ -133,6 +133,49 @@ public interface Sdm630mtv2Meter extends OpenemsComponent {
 		
 		
 		
+	    AVG_VOLTS(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.VOLT) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    AVG_CURRENT(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.AMPERE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    SUM_LINE_CURRENTS(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.AMPERE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    TOTAL_SYS_POWER(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.WATT) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    TOTAL_SYS_VOLTAMPS(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.VOLT_AMPERE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    TOTAL_SYS_VAR(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.VOLT_AMPERE_REACTIVE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    TOTAL_SYS_POWFACT(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.NONE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    TOTAL_SYS_PHYANG(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.NONE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    VOLTFREQ(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.HERTZ) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    IMPORTWH(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.KILOWATT_HOURS) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    EXPORTWH(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.KILOWATT_HOURS) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    IMPORTVAR(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.VOLT_AMPERE_REACTIVE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+	    EXPORTVAR(Doc.of(OpenemsType.FLOAT) //
+				.unit(Unit.KILOVOLT_AMPERE_REACTIVE) //
+				.persistencePriority(PersistencePriority.HIGH)),
+		
+
+		
+		
 		
 		
 		

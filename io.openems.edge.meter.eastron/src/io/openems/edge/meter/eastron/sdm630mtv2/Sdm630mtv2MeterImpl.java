@@ -131,6 +131,12 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 		
 		ModbusProtocol modbusProtocol = new ModbusProtocol(this);
 		
+		
+		//
+		// remember: dummy regs for spacing ...
+		// new DummyRegisterElement(814, 859),
+		//
+		
 		if (readEnablerMask.indexOf("[VFloat]") >= 0) {
 			modbusProtocol.addTask(
 				new FC4ReadInputRegistersTask(/*0x7531*/ 0, Priority.HIGH, //
@@ -144,21 +150,7 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 						    ElementToChannelConverter.DIRECT_1_TO_1) */
 				)
 			);		
-			modbusProtocol.addTask(
-					new FC4ReadInputRegistersTask(/*0x7531*/ 0xc8, Priority.HIGH, //
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL12, new FloatDoublewordElement(0xc8), 
-					    		ElementToChannelConverter.DIRECT_1_TO_1),
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL23, new FloatDoublewordElement(0xca), 
-					    		ElementToChannelConverter.DIRECT_1_TO_1),
-					    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL31, new FloatDoublewordElement(0xcc), 
-					    		ElementToChannelConverter.DIRECT_1_TO_1) /*,
-						m(MeterAlgo2UEM1P5_4DS_E.ChannelId.VOLTAGE_FSYS, new FloatDoublewordElement(0x100C),
-							    ElementToChannelConverter.DIRECT_1_TO_1) */
-					    
-					)
-				);		
 		}
-		
 		
 		if (readEnablerMask.indexOf("[AFloat]") >= 0) {
 			modbusProtocol.addTask(
@@ -179,20 +171,103 @@ public class Sdm630mtv2MeterImpl extends AbstractOpenemsModbusComponent
 				)
 			);			
 		};
+		if (readEnablerMask.indexOf("[PActiveFloat]") >= 0) {
+			modbusProtocol.addTask(
+				// new FC3ReadRegistersTask(/*0x7531*/ 0, Priority.HIGH, //
+				new FC4ReadInputRegistersTask(/*0x7531*/ 12, Priority.HIGH, //
+					
+				    m(Sdm630mtv2Meter.ChannelId.POWER_FL1, new FloatDoublewordElement(12), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.POWER_FL2, new FloatDoublewordElement(14), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.POWER_FL3, new FloatDoublewordElement(16), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1)
+						
+				)
+			);
+		}			
+
+		
+		if (readEnablerMask.indexOf("[VFloat]") >= 0) {
+			modbusProtocol.addTask(
+				new FC4ReadInputRegistersTask(/*0x7531*/ 0xc8, Priority.HIGH, //
+				    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL12, new FloatDoublewordElement(0xc8), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL23, new FloatDoublewordElement(0xca), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1),
+				    m(Sdm630mtv2Meter.ChannelId.VOLTAGE_FL31, new FloatDoublewordElement(0xcc), 
+				    		ElementToChannelConverter.DIRECT_1_TO_1) /*,
+					m(MeterAlgo2UEM1P5_4DS_E.ChannelId.VOLTAGE_FSYS, new FloatDoublewordElement(0x100C),
+						    ElementToChannelConverter.DIRECT_1_TO_1) */
+				    
+				)
+			);		
+		}
+		
+		
+		
+		
 		
 		modbusProtocol.addTask(
 			// new FC3ReadRegistersTask(/*0x7531*/ 0, Priority.HIGH, //
-			new FC4ReadInputRegistersTask(/*0x7531*/ 12, Priority.HIGH, //
+			new FC4ReadInputRegistersTask(/*0x7531*/ 0x2A, Priority.HIGH, //
 				
-			    m(Sdm630mtv2Meter.ChannelId.POWER_FL1, new FloatDoublewordElement(12), 
+				// 42-43
+			    m(Sdm630mtv2Meter.ChannelId.AVG_VOLTS, new FloatDoublewordElement(0x2A),
 			    		ElementToChannelConverter.DIRECT_1_TO_1),
-			    m(Sdm630mtv2Meter.ChannelId.POWER_FL2, new FloatDoublewordElement(14), 
+				// 44-45
+	    		new DummyRegisterElement(0x2c, 0x2d),
+				// 46-47
+			    m(Sdm630mtv2Meter.ChannelId.AVG_CURRENT, new FloatDoublewordElement(0x2E), 
 			    		ElementToChannelConverter.DIRECT_1_TO_1),
-			    m(Sdm630mtv2Meter.ChannelId.POWER_FL3, new FloatDoublewordElement(16), 
+				// 48-49
+			    m(Sdm630mtv2Meter.ChannelId.SUM_LINE_CURRENTS, new FloatDoublewordElement(0x30), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 50-51
+	    		new DummyRegisterElement(0x32, 0x33),
+				// 52-53
+			    m(Sdm630mtv2Meter.ChannelId.TOTAL_SYS_POWER, new FloatDoublewordElement(0x34), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 54-55
+	    		new DummyRegisterElement(0x36, 0x37),
+				// 56-57
+			    m(Sdm630mtv2Meter.ChannelId.TOTAL_SYS_VOLTAMPS, new FloatDoublewordElement(0x38), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 58-59
+	    		new DummyRegisterElement(0x3A, 0x3B),
+				// 60-61
+			    m(Sdm630mtv2Meter.ChannelId.TOTAL_SYS_VAR, new FloatDoublewordElement(0x3C), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 62-63
+			    m(Sdm630mtv2Meter.ChannelId.TOTAL_SYS_POWFACT, new FloatDoublewordElement(0x3E), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 64-65
+	    		new DummyRegisterElement(0x40, 0x41),
+				// 66-67
+			    m(Sdm630mtv2Meter.ChannelId.TOTAL_SYS_PHYANG, new FloatDoublewordElement(0x42),
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 68-69
+	    		new DummyRegisterElement(0x44, 0x45),
+				// 70-71
+			    m(Sdm630mtv2Meter.ChannelId.VOLTFREQ, new FloatDoublewordElement(0x46), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 72-73
+			    m(Sdm630mtv2Meter.ChannelId.IMPORTWH, new FloatDoublewordElement(0x48), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 74-75
+			    m(Sdm630mtv2Meter.ChannelId.EXPORTWH, new FloatDoublewordElement(0x4A), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 76-77
+			    m(Sdm630mtv2Meter.ChannelId.IMPORTVAR, new FloatDoublewordElement(0x4C), 
+			    		ElementToChannelConverter.DIRECT_1_TO_1),
+				// 78-79
+			    m(Sdm630mtv2Meter.ChannelId.EXPORTVAR, new FloatDoublewordElement(0x4E), 
 			    		ElementToChannelConverter.DIRECT_1_TO_1)
 					
 			)
 		);
+		
+		
 		modbusProtocol.addTask(
 			new FC3ReadRegistersTask(/* */ 52, Priority.HIGH, //
 
